@@ -51,7 +51,4 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-  </ItemGroup>
 </Project>
