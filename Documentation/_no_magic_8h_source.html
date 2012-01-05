@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<title>NoMagic: D:/Programmieren/C++/NoMagic/NoMagic/NoMagic.h Quellcode</title>
+
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() { searchBox.OnSelectItem(0); });
+</script>
+
+</head>
+<body>
+<div id="top"><!-- do not remove this div! -->
+
+
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  
+  
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">NoMagic
+   &#160;<span id="projectnumber">1.0</span>
+   </div>
+   <div id="projectbrief">Memory editing library</div>
+  </td>
+  
+  
+  
+ </tr>
+ </tbody>
+</table>
+</div>
+
+<!-- Erzeugt von Doxygen 1.7.6.1 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Suchen');
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Hauptseite</span></a></li>
+      <li><a href="annotated.html"><span>Klassen</span></a></li>
+      <li class="current"><a href="files.html"><span>Dateien</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Suchen" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Auflistung&#160;der&#160;Dateien</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">D:/Programmieren/C++/NoMagic/NoMagic/NoMagic.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="preprocessor">#pragma once</span>
+<a name="l00002"></a>00002 <span class="preprocessor"></span>
+<a name="l00003"></a>00003 
+<a name="l00004"></a>00004 <span class="keyword">namespace </span>NoMagic
+<a name="l00005"></a>00005 {
+<a name="l00006"></a><a class="code" href="class_no_magic_1_1_no_magic.html">00006</a>         <span class="keyword">class </span><a class="code" href="class_no_magic_1_1_no_magic.html">NoMagic</a>
+<a name="l00007"></a>00007         {
+<a name="l00008"></a>00008         <span class="keyword">private</span>:
+<a name="l00010"></a><a class="code" href="class_no_magic_1_1_no_magic.html#a01b1b1ddec8833b9b54ee70684aae310">00010</a>                 DWORD <a class="code" href="class_no_magic_1_1_no_magic.html#a01b1b1ddec8833b9b54ee70684aae310" title="Die Prozess ID.">procID</a>;
+<a name="l00012"></a><a class="code" href="class_no_magic_1_1_no_magic.html#ad7cfd60d5f3fa6b68c42a6f76c28082b">00012</a>                 HANDLE <a class="code" href="class_no_magic_1_1_no_magic.html#ad7cfd60d5f3fa6b68c42a6f76c28082b" title="Handle zum Prozess.">process</a>;
+<a name="l00014"></a><a class="code" href="class_no_magic_1_1_no_magic.html#a192f038bc60f05a05c88f66b67b04377">00014</a>                 UINT_PTR <a class="code" href="class_no_magic_1_1_no_magic.html#a192f038bc60f05a05c88f66b67b04377" title="Basisadresse der ge&ouml;ffneten .exe.">baseAddress</a>;
+<a name="l00016"></a><a class="code" href="class_no_magic_1_1_no_magic.html#a2d34947144dced197bc2f56d0b2fbf09">00016</a>                 UINT_PTR <a class="code" href="class_no_magic_1_1_no_magic.html#a2d34947144dced197bc2f56d0b2fbf09" title="Die Gr&ouml;&szlig;e des in den Arbeitsspeicher geladenen Programmes.">moduleSize</a>;
+<a name="l00018"></a><a class="code" href="class_no_magic_1_1_no_magic.html#a63ccb408edb3801cc997bec283dfd693">00018</a>                 <span class="keywordtype">bool</span> <a class="code" href="class_no_magic_1_1_no_magic.html#a63ccb408edb3801cc997bec283dfd693" title="Legt fest, ob wir uns im Prozess oder au&szlig;erhalb des Prozesses befinden.">bInProcess</a>;
+<a name="l00019"></a>00019 
+<a name="l00021"></a>00021                 <span class="keywordtype">void</span> <a class="code" href="class_no_magic_1_1_no_magic.html#a13679150181205989b061d0c6764875b">GetBaseAddress</a>(DWORD <a class="code" href="class_no_magic_1_1_no_magic.html#a01b1b1ddec8833b9b54ee70684aae310" title="Die Prozess ID.">procID</a>, <span class="keyword">const</span> TCHAR* name);
+<a name="l00022"></a>00022 
+<a name="l00029"></a>00029                 <span class="keywordtype">void</span> <a class="code" href="class_no_magic_1_1_no_magic.html#a7433c9c6ad1a87c7cabdefe52ae2f8ac" title="Wirft MagicException bei Fehlschlag.">LoadDLLIntoProcess</a>(tstring <span class="keyword">const</span>&amp; path, HMODULE&amp; outLoadedModule) <span class="keyword">const</span>;
+<a name="l00030"></a>00030 
+<a name="l00038"></a>00038                 <span class="keywordtype">void</span> <a class="code" href="class_no_magic_1_1_no_magic.html#adae1b32bf735d981b5e462ede0e84851" title="Wirft MagicException bei Fehlschlag.">FindStartFunctionAddress</a>(HMODULE&amp; loadedModule, tstring <span class="keyword">const</span>&amp; path, UINT_PTR&amp; outStartAddress) <span class="keyword">const</span>;
+<a name="l00039"></a>00039 
+<a name="l00045"></a>00045                 <span class="keywordtype">void</span> <a class="code" href="class_no_magic_1_1_no_magic.html#a6bc09279dc9f479d920c9370ccccdf09" title="Wirft MagicException bei Fehlschlag.">CallStart</a>(UINT_PTR startFunctionAddress) <span class="keyword">const</span>;
+<a name="l00046"></a>00046         <span class="keyword">public</span>:
+<a name="l00047"></a>00047                 <a class="code" href="class_no_magic_1_1_no_magic.html">NoMagic</a>(<span class="keywordtype">void</span>);
+<a name="l00048"></a>00048                 ~<a class="code" href="class_no_magic_1_1_no_magic.html">NoMagic</a>(<span class="keywordtype">void</span>);
+<a name="l00049"></a>00049         
+<a name="l00056"></a>00056                 DWORD <a class="code" href="class_no_magic_1_1_no_magic.html#a0d35b84167252167007b801ca4c4af0f" title="Wirft MagicException bei Fehlschlag.">OpenProcess</a>(tstring <span class="keyword">const</span>&amp; name);
+<a name="l00057"></a>00057 
+<a name="l00062"></a>00062                 HANDLE <a class="code" href="class_no_magic_1_1_no_magic.html#adb1c70ac263b8fb33dd5a32962c18c94">GetProcessHandle</a>() <span class="keyword">const</span>;
+<a name="l00063"></a>00063 
+<a name="l00068"></a>00068                 DWORD <a class="code" href="class_no_magic_1_1_no_magic.html#a89c71ec245f2d1550dfb451e797db9a6">GetProcessID</a>() <span class="keyword">const</span>;
+<a name="l00069"></a>00069 
+<a name="l00074"></a>00074                 UINT_PTR <a class="code" href="class_no_magic_1_1_no_magic.html#a13679150181205989b061d0c6764875b">GetBaseAddress</a>() <span class="keyword">const</span>;
+<a name="l00075"></a>00075 
+<a name="l00080"></a>00080                 UINT_PTR <a class="code" href="class_no_magic_1_1_no_magic.html#a51ba2496ce6e584ebfe3d223b67de4b5">GetModuleSize</a>() <span class="keyword">const</span>;
+<a name="l00081"></a>00081 
+<a name="l00085"></a>00085                 <span class="keywordtype">bool</span> <a class="code" href="class_no_magic_1_1_no_magic.html#a05c870356b07d5fcd1a46133429f31b9">IsInProcess</a>();
+<a name="l00086"></a>00086 
+<a name="l00091"></a>00091                 <span class="keywordtype">void</span> <a class="code" href="class_no_magic_1_1_no_magic.html#a666b16624a9af720e4be46f34a8ddb69">SetInProcess</a>(<span class="keywordtype">bool</span> isInProc);
+<a name="l00092"></a>00092                 
+<a name="l00105"></a>00105                 UINT_PTR <a class="code" href="class_no_magic_1_1_no_magic.html#a964a95707df597079954b3418f77e95e" title="Instructions: http://sparksandflames.com/files/x86InstructionChart.html.">SearchPattern</a>(<a class="code" href="class_no_magic_1_1byte_string.html">byteString</a> <span class="keyword">const</span>&amp; pattern, std::vector&lt;bool&gt;&amp; mask, <a class="code" href="class_no_magic_1_1_algorithm_1_1_i_pattern_algorithm.html">Algorithm::IPatternAlgorithm</a>&amp; algorithm = <a class="code" href="class_no_magic_1_1_algorithm_1_1_boyer_moore_horspool.html">Algorithm::BoyerMooreHorspool</a>()) <span class="keyword">const</span>;
+<a name="l00106"></a>00106 
+<a name="l00110"></a>00110                 <span class="keywordtype">void</span> <a class="code" href="class_no_magic_1_1_no_magic.html#ae10b1621fa46e19a2e3ba0c7f2f6ac1a">SetDebugPrivileges</a>() <span class="keyword">const</span>;
+<a name="l00111"></a>00111         
+<a name="l00117"></a>00117                 UINT_PTR <a class="code" href="class_no_magic_1_1_no_magic.html#a8a74debcd5372449546a04324c372a7e">InjectDll</a>(tstring <span class="keyword">const</span>&amp; path) <span class="keyword">const</span>;
+<a name="l00118"></a>00118 
+<a name="l00123"></a>00123                 <span class="keywordtype">void</span> <a class="code" href="class_no_magic_1_1_no_magic.html#ab80ecae1ba4431906ef955020e9cb749">UnloadDll</a>(UINT_PTR address) <span class="keyword">const</span>;
+<a name="l00124"></a>00124 
+<a name="l00131"></a>00131                 PBYTE <a class="code" href="class_no_magic_1_1_no_magic.html#ace1ce65b9f99409ece3990ab90419c28">HookFunction</a>(PBYTE targetFunction, PBYTE newFunction) <span class="keyword">const</span>;
+<a name="l00132"></a>00132 
+<a name="l00139"></a>00139                 BOOL <a class="code" href="class_no_magic_1_1_no_magic.html#a198d1cbdabea56af067f08664d903f64">UnhookFunction</a>(PBYTE origFunction, PBYTE yourFunction) <span class="keyword">const</span>;
+<a name="l00140"></a>00140 
+<a name="l00149"></a><a class="code" href="class_no_magic_1_1_no_magic.html#aad42b1e139113c5d21f4f5fb96c273c0">00149</a>                 <span class="keyword">template</span> &lt;<span class="keyword">typename</span> type&gt; type <a class="code" href="class_no_magic_1_1_no_magic.html#aad42b1e139113c5d21f4f5fb96c273c0" title="Strings sollten damit nicht gelesen werden!">Read</a>(UINT_PTR address, <span class="keywordtype">bool</span> relative = <span class="keyword">false</span>)<span class="keyword"> const</span>
+<a name="l00150"></a>00150 <span class="keyword">                </span>{
+<a name="l00151"></a>00151                         type buffer;
+<a name="l00152"></a>00152                         LPCVOID addr = <span class="keyword">reinterpret_cast&lt;</span>LPVOID<span class="keyword">&gt;</span>(relative ? address+<a class="code" href="class_no_magic_1_1_no_magic.html#a192f038bc60f05a05c88f66b67b04377" title="Basisadresse der ge&ouml;ffneten .exe.">baseAddress</a> : address);
+<a name="l00153"></a>00153                         W32_CALL(ReadProcessMemory(<a class="code" href="class_no_magic_1_1_no_magic.html#ad7cfd60d5f3fa6b68c42a6f76c28082b" title="Handle zum Prozess.">process</a>, addr, &amp;buffer, <span class="keyword">sizeof</span>(buffer), <span class="keyword">nullptr</span>));
+<a name="l00154"></a>00154 
+<a name="l00155"></a>00155                         <span class="keywordflow">return</span> buffer;
+<a name="l00156"></a>00156                 }
+<a name="l00157"></a>00157                 
+<a name="l00165"></a><a class="code" href="class_no_magic_1_1_no_magic.html#a8e132f2ddd04bd93cb17116495e7b155">00165</a>                 std::string <a class="code" href="class_no_magic_1_1_no_magic.html#a8e132f2ddd04bd93cb17116495e7b155" title="Wirft MagicException bei Fehlschlag.">ReadString</a>(UINT_PTR address, <span class="keywordtype">bool</span> relative = <span class="keyword">false</span>)<span class="keyword"> const</span>
+<a name="l00166"></a>00166 <span class="keyword">                </span>{
+<a name="l00167"></a>00167                         CHAR buffer[512];
+<a name="l00168"></a>00168 
+<a name="l00169"></a>00169                         LPCVOID addr = <span class="keyword">reinterpret_cast&lt;</span>LPVOID<span class="keyword">&gt;</span>(relative ? address+<a class="code" href="class_no_magic_1_1_no_magic.html#a192f038bc60f05a05c88f66b67b04377" title="Basisadresse der ge&ouml;ffneten .exe.">baseAddress</a> : address);
+<a name="l00170"></a>00170                         W32_CALL(ReadProcessMemory(<a class="code" href="class_no_magic_1_1_no_magic.html#ad7cfd60d5f3fa6b68c42a6f76c28082b" title="Handle zum Prozess.">process</a>, addr, buffer, 512, <span class="keyword">nullptr</span>));
+<a name="l00171"></a>00171                 
+<a name="l00172"></a>00172                         <span class="keywordflow">return</span> buffer;
+<a name="l00173"></a>00173                 }
+<a name="l00174"></a>00174                 
+<a name="l00182"></a><a class="code" href="class_no_magic_1_1_no_magic.html#a558a43945b3e3d8cab7aebd22a32bf40">00182</a>                 <span class="keyword">template</span> &lt;<span class="keyword">typename</span> type&gt; <span class="keywordtype">void</span> <a class="code" href="class_no_magic_1_1_no_magic.html#a558a43945b3e3d8cab7aebd22a32bf40" title="Strings sollten damit nicht geschrieben werden! Wirft MagicException bei Fehlschlag.">Write</a>(UINT_PTR address, type value, <span class="keywordtype">bool</span> relative = <span class="keyword">false</span>)<span class="keyword"> const</span>
+<a name="l00183"></a>00183 <span class="keyword">                </span>{
+<a name="l00184"></a>00184                         LPVOID addr = <span class="keyword">reinterpret_cast&lt;</span>LPVOID<span class="keyword">&gt;</span>(relative ? address+<a class="code" href="class_no_magic_1_1_no_magic.html#a192f038bc60f05a05c88f66b67b04377" title="Basisadresse der ge&ouml;ffneten .exe.">baseAddress</a> : address);
+<a name="l00185"></a>00185                         W32_CALL(WriteProcessMemory(<a class="code" href="class_no_magic_1_1_no_magic.html#ad7cfd60d5f3fa6b68c42a6f76c28082b" title="Handle zum Prozess.">process</a>, addr, &amp;value, <span class="keyword">sizeof</span>(value), <span class="keyword">nullptr</span>));
+<a name="l00186"></a>00186                 }
+<a name="l00187"></a>00187                 
+<a name="l00194"></a><a class="code" href="class_no_magic_1_1_no_magic.html#a607a64370de989196f03c84441c0af19">00194</a>                 <span class="keywordtype">void</span> <a class="code" href="class_no_magic_1_1_no_magic.html#a607a64370de989196f03c84441c0af19" title="Wirft MagicException bei Fehlschlag.">WriteString</a>(UINT_PTR address, std::string value, <span class="keywordtype">bool</span> relative = <span class="keyword">false</span>)<span class="keyword"> const</span>
+<a name="l00195"></a>00195 <span class="keyword">                </span>{
+<a name="l00196"></a>00196                         LPVOID addr = <span class="keyword">reinterpret_cast&lt;</span>LPVOID<span class="keyword">&gt;</span>(relative ? address+<a class="code" href="class_no_magic_1_1_no_magic.html#a192f038bc60f05a05c88f66b67b04377" title="Basisadresse der ge&ouml;ffneten .exe.">baseAddress</a> : address);
+<a name="l00197"></a>00197                         W32_CALL(WriteProcessMemory(<a class="code" href="class_no_magic_1_1_no_magic.html#ad7cfd60d5f3fa6b68c42a6f76c28082b" title="Handle zum Prozess.">process</a>, addr, value.c_str(), value.length() + 1, <span class="keyword">nullptr</span>));
+<a name="l00198"></a>00198                 }
+<a name="l00199"></a>00199         };
+<a name="l00200"></a>00200 }
+</pre></div></div><!-- contents -->
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Alle</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Klassen</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Funktionen</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variablen</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+
+
+<hr class="footer"/><address class="footer"><small>
+Erzeugt am Don Jan 5 2012 21:24:16 für NoMagic von &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.7.6.1
+</small></address>
+
+</body>
+</html>

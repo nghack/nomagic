@@ -1,0 +1,18 @@
+﻿Der Buildvorgang wurde am 02.01.2012 10:44:26 gestartet.
+     1>Projekt "D:\Programmieren\C++\NoMagic\NoMagic\NoMagic.vcxproj" auf Knoten "3", build Ziel(e).
+     1>InitializeBuildStatus:
+         "Release\NoMagic.unsuccessfulbuild" wird erstellt, da "AlwaysCreate" angegeben wurde.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt NoMagic.cpp
+         NoMagic.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"D:\Programmieren\C++\NoMagic\Release\NoMagic.lib" /NOLOGO /LTCG Release\NoMagic.obj
+         NoMagic.vcxproj -> D:\Programmieren\C++\NoMagic\Release\NoMagic.lib
+       FinalizeBuildStatus:
+         Die Datei "Release\NoMagic.unsuccessfulbuild" wird gelöscht.
+         Aktualisieren des Timestamps von "Release\NoMagic.lastbuildstate".
+     1>Die Erstellung des Projekts "D:\Programmieren\C++\NoMagic\NoMagic\NoMagic.vcxproj" ist abgeschlossen, build Ziel(e).
+
+Das Erstellen war erfolgreich.
+
+Verstrichene Zeit 00:00:01.16
