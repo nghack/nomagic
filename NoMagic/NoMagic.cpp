@@ -223,12 +223,21 @@ namespace NoMagic
 
 	std::string NoMagic::ReadString(UINT_PTR address, bool relative) const
 	{
-		CHAR buffer[512];
+		CHAR buffer[513] = {};
+		std::stringstream sstream;
 
-		LPCVOID addr = reinterpret_cast<LPVOID>(relative ? address+baseAddress : address);
-		W32_CALL(ReadProcessMemory(process, addr, buffer, 512, nullptr));
+		UINT_PTR addr = relative ? address+baseAddress : address;
+
+		do
+		{
+			W32_CALL(ReadProcessMemory(process, reinterpret_cast<LPCVOID>(addr), buffer, 512, nullptr));
+			addr += 512;
+			sstream << buffer;
+		} while(strlen(buffer) == 512);
+
 		
-		return buffer;
+		
+		return sstream.str();
 	}
 	
 	void NoMagic::WriteString(UINT_PTR address, std::string value, bool relative) const
