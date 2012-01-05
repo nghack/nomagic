@@ -6,7 +6,8 @@ namespace NoMagic
 
 	NoMagic::~NoMagic(void)
 	{
-		CloseHandle(process);
+		if(process != nullptr)
+			CloseHandle(process);
 	}
 
 	void NoMagic::GetBaseAddress(DWORD procID, const TCHAR* name)
@@ -61,8 +62,7 @@ namespace NoMagic
 			} while (Process32Next(hSnapshot, &pe32));
 		}
 
-		//0x7FF == all rights
-		process = ::OpenProcess(0x7FF, FALSE, procID);
+		process = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, procID);
 		if(!process)
 			throw MagicException("Can not open process!", GetLastError());
 
@@ -80,7 +80,6 @@ namespace NoMagic
 		}
 		else
 		{
-			BYTE b = Read<BYTE>(baseAddress+0x1000, false);
 			std::vector<BYTE> bytes;
 			bytes.resize(moduleSize);
 			//Hacky?
@@ -143,7 +142,7 @@ namespace NoMagic
 		if(nullptr == hThread)
 			throw MagicException("CreateRemoteThread failed!", GetLastError());
 
-		if(-1 == WaitForSingleObject(hThread, INFINITE))
+		if(0 != WaitForSingleObject(hThread, INFINITE))
 			throw MagicException("WaitForSingleObject failed!", GetLastError());
 		DWORD loadedModule = 0;
 		W32_CALL(GetExitCodeThread( hThread, &loadedModule ));
@@ -183,7 +182,7 @@ namespace NoMagic
 		if(nullptr == hThread)
 			throw MagicException("CreateRemoteThread failed!", GetLastError());
 		
-		if(-1 == WaitForSingleObject(hThread, INFINITE))
+		if(0 != WaitForSingleObject(hThread, INFINITE))
 			throw MagicException("WaitForSingleObject failed!", GetLastError());
 
 		W32_CALL(CloseHandle(hThread));
@@ -216,7 +215,7 @@ namespace NoMagic
 		if(nullptr == hThread)
 			throw MagicException("CreateRemoteThread failed!", GetLastError());
 
-		if(-1 != WaitForSingleObject(hThread, INFINITE))
+		if(0 != WaitForSingleObject(hThread, INFINITE))
 			throw MagicException("WaitForSingleObject failed!", GetLastError());
 
 		W32_CALL(CloseHandle(hThread));
