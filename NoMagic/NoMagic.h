@@ -37,7 +37,7 @@ namespace NoMagic
 		void GetBaseAddress(DWORD procID, const TCHAR* name);
 
 		/**
-		Lädt die in path angegebene .dll in den geöffneten Prozess.
+		L&auml;dt die in path angegebene .dll in den ge&ouml;ffneten Prozess.
 		\param path Der Pfad zur .dll
 		\param outLoadedModule Pointer zum geladenen Modul.
 		\brief Wirft MagicException bei Fehlschlag
@@ -78,19 +78,19 @@ namespace NoMagic
 		HANDLE GetProcessHandle() const;
 
 		/**
-		Gibt die ID des Prozesses zurück.
+		Gibt die ID des Prozesses zur&uuml;ck.
 		\return Prozess ID.
 		*/
 		DWORD GetProcessID() const;
 
 		/**
-		Gibt die Startadresse des Modules zurück.
+		Gibt die Startadresse des Modules zur&uuml;ck.
 		\return Startadresse des Modules.
 		*/
 		UINT_PTR GetBaseAddress() const;
 
 		/**
-		Gibt die letzte Adresse des Modules zurück.
+		Gibt die letzte Adresse des Modules zur&uuml;ck.
 		\return Die letzte Adresse des Modules
 		*/
 		UINT_PTR GetModuleSize() const;
@@ -133,7 +133,7 @@ namespace NoMagic
 		UINT_PTR InjectDll(tstring const& path) const;
 
 		/**
-		Entlädt eine injizierte .dll aus den ge&ouml;ffneten Prozess.
+		Entl&auml;dt eine injizierte .dll aus den ge&ouml;ffneten Prozess.
 		\param address Adresse der geladenen Library 
 		*/
 		void UnloadDll(UINT_PTR address) const;
@@ -153,6 +153,23 @@ namespace NoMagic
 		\return TRUE bei Erfolg, FALSE bei Misserfolg.
 		*/
 		BOOL UnhookFunction(PBYTE origFunction, PBYTE yourFunction) const;
+
+		/**
+		&Auml;ndert den Schutz einer Section.
+		\param address Die Adresse, deren Schutz ge&auml;ndert werden soll.
+		\param numBytes Anzahl an zu &auml;ndernden Bytes.
+		\param newProtect Der neue Schutz der Region.
+		\return Den alten Schutz der Region.
+		*/
+		DWORD Protect(UINT_PTR address, DWORD numBytes, DWORD newProtect) const;
+
+		/**
+		Gibt die Adresse der virtuellen Methode zur&uuml;ck
+		\param object Pointer auf die Klasse, deren virtuelle Methode wir haben wollen.
+		\param vTableIndex Der Index der virtuellen Methode.
+		\return Pointer zur virtuellen Methode.
+		*/
+		DWORD* GetVirtualMethod(LPVOID object, DWORD vTableIndex) const;
 
 		/**
 		Lie&szlig;t sizeof(type) Bytes aus dem Speicher. 

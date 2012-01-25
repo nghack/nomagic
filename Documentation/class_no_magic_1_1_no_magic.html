@@ -127,7 +127,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Suchen');
 <tr><td class="memItemLeft" align="right" valign="top">BOOL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_no_magic_1_1_no_magic.html#a198d1cbdabea56af067f08664d903f64">UnhookFunction</a> (PBYTE origFunction, PBYTE yourFunction) const </td></tr>
 <tr><td class="memTemplParams" colspan="2">template&lt;typename type &gt; </td></tr>
 <tr><td class="memTemplItemLeft" align="right" valign="top">type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_no_magic_1_1_no_magic.html#aad42b1e139113c5d21f4f5fb96c273c0">Read</a> (UINT_PTR address, bool relative=false) const </td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Strings sollten damit nicht gelesen werden!  <a href="#aad42b1e139113c5d21f4f5fb96c273c0"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Strings sollten damit nicht gelesen werden!<br/>
+Wirft <a class="el" href="class_no_magic_1_1_magic_exception.html">MagicException</a> bei Fehlschlag.  <a href="#aad42b1e139113c5d21f4f5fb96c273c0"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_no_magic_1_1_no_magic.html#a8e132f2ddd04bd93cb17116495e7b155">ReadString</a> (UINT_PTR address, bool relative=false) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Wirft <a class="el" href="class_no_magic_1_1_magic_exception.html">MagicException</a> bei Fehlschlag.  <a href="#a8e132f2ddd04bd93cb17116495e7b155"></a><br/></td></tr>
 <tr><td class="memTemplParams" colspan="2">template&lt;typename type &gt; </td></tr>
@@ -136,6 +137,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Suchen');
 Wirft <a class="el" href="class_no_magic_1_1_magic_exception.html">MagicException</a> bei Fehlschlag.  <a href="#a558a43945b3e3d8cab7aebd22a32bf40"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_no_magic_1_1_no_magic.html#a607a64370de989196f03c84441c0af19">WriteString</a> (UINT_PTR address, std::string value, bool relative=false) const </td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Wirft <a class="el" href="class_no_magic_1_1_magic_exception.html">MagicException</a> bei Fehlschlag.  <a href="#a607a64370de989196f03c84441c0af19"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acd54f8e013dc8bb626bb76526d8addb3"></a><!-- doxytag: member="NoMagic::NoMagic::SetProtect" ref="acd54f8e013dc8bb626bb76526d8addb3" args="(UINT_PTR address, DWORD numBytes, DWORD newProtect)" -->
+DWORD&#160;</td><td class="memItemRight" valign="bottom"><b>SetProtect</b> (UINT_PTR address, DWORD numBytes, DWORD newProtect)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1c49d57c8e69d859639aa0b8b322ce8a"></a><!-- doxytag: member="NoMagic::NoMagic::GetVirutalMethod" ref="a1c49d57c8e69d859639aa0b8b322ce8a" args="(LPVOID pObject, DWORD vTableIndex)" -->
+UINT_PTR&#160;</td><td class="memItemRight" valign="bottom"><b>GetVirutalMethod</b> (LPVOID pObject, DWORD vTableIndex)</td></tr>
 <tr><td colspan="2"><h2><a name="pri-methods"></a>
 Private Methoden</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad955beb981fbfdcb9f394988a755628b"></a><!-- doxytag: member="NoMagic::NoMagic::GetBaseAddress" ref="ad955beb981fbfdcb9f394988a755628b" args="(DWORD procID, const TCHAR *name)" -->
@@ -477,8 +482,9 @@ template&lt;typename type &gt; </div>
 </div>
 <div class="memdoc">
 
-<p>Strings sollten damit nicht gelesen werden! </p>
-<p>Lie&szlig;t sizeof(type) Bytes aus dem Speicher. Wirft <a class="el" href="class_no_magic_1_1_magic_exception.html">MagicException</a> bei Fehlschlag </p>
+<p>Strings sollten damit nicht gelesen werden!<br/>
+Wirft <a class="el" href="class_no_magic_1_1_magic_exception.html">MagicException</a> bei Fehlschlag. </p>
+<p>Lie&szlig;t sizeof(type) Bytes aus dem Speicher. </p>
 <dl class="params"><dt><b>Parameter:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">address</td><td>Die Adresse, an der wir auslesen m&ouml;chten. </td></tr>
@@ -509,7 +515,7 @@ template&lt;typename type &gt; </div>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td> const<code> [inline]</code></td>
+          <td></td><td> const</td>
         </tr>
       </table>
 </div>
@@ -746,7 +752,7 @@ Wirft <a class="el" href="class_no_magic_1_1_magic_exception.html">MagicExceptio
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td> const<code> [inline]</code></td>
+          <td></td><td> const</td>
         </tr>
       </table>
 </div>
@@ -786,7 +792,7 @@ Wirft <a class="el" href="class_no_magic_1_1_magic_exception.html">MagicExceptio
 
 
 <hr class="footer"/><address class="footer"><small>
-Erzeugt am Don Jan 5 2012 21:24:16 für NoMagic von &#160;<a href="http://www.doxygen.org/index.html">
+Erzeugt am Mit Jan 25 2012 14:41:16 für NoMagic von &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>
