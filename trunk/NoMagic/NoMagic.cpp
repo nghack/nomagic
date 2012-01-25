@@ -236,6 +236,19 @@ namespace NoMagic
 
 		W32_CALL(CloseHandle(hThread));
 	}
+	
+	DWORD NoMagic::Protect(UINT_PTR address, DWORD numBytes, DWORD newProtect) const
+	{
+		DWORD oldProtect = 0;
+		W32_CALL(VirtualProtect(reinterpret_cast<LPVOID>(address), numBytes, newProtect, &oldProtect));
+		return oldProtect;
+	}
+
+	DWORD* NoMagic::GetVirtualMethod(LPVOID object, DWORD vTableIndex) const
+	{
+		LPDWORD** __vmt = reinterpret_cast<LPDWORD**>(object);
+		return (*__vmt)[vTableIndex];
+	}
 
 	std::string NoMagic::ReadString(UINT_PTR address, bool relative) const
 	{
