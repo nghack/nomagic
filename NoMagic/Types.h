@@ -35,7 +35,7 @@ namespace NoMagic
 		int GetError() { return error; }
 	};
 
-	#define W32_CALL(fun) if(FALSE == fun) throw MagicException(#fun, GetLastError())
+	#define W32_CALL(fun) if(FALSE == fun) throw ::NoMagic::MagicException(#fun, GetLastError())
 
 	/**
 	Ein String gef&uuml;llt mit unsigned chars anstelle von signed chars.

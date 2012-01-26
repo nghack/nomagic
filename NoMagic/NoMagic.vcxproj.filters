@@ -45,10 +45,16 @@
     <ClInclude Include="detours.h">
       <Filter>Headerdateien\Dependencies</Filter>
     </ClInclude>
+    <ClInclude Include="FASM.h">
+      <Filter>Headerdateien\Dependencies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NoMagic.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="FASM.cpp">
+      <Filter>Headerdateien\Dependencies</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

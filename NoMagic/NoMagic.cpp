@@ -156,7 +156,7 @@ namespace NoMagic
 			throw MagicException("VirtualAllocEx failed!", GetLastError());
 
 		W32_CALL(WriteProcessMemory(process, addr, reinterpret_cast<LPCVOID>(path.c_str()), path.length() + 1, nullptr));
-
+		
 		HANDLE hThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(LoadLibraryA), addr, 0, nullptr);
 		if(nullptr == hThread)
 			throw MagicException("CreateRemoteThread failed!", GetLastError());
