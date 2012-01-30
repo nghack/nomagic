@@ -72,18 +72,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithm_Include.h" />
     <ClInclude Include="BoyerMooreHorspool.h" />
     <ClInclude Include="detours.h" />
     <ClInclude Include="FASM.h" />
     <ClInclude Include="IAlgorithm.h" />
+    <ClInclude Include="Injector.h" />
+    <ClInclude Include="Injector_Include.h" />
     <ClInclude Include="IPatternAlgorithm.h" />
+    <ClInclude Include="Memory.h" />
+    <ClInclude Include="Module.h" />
     <ClInclude Include="NoMagic.h" />
     <ClInclude Include="NoMagic_Include.h" />
+    <ClInclude Include="Process.h" />
+    <ClInclude Include="STD_Include.h" />
+    <ClInclude Include="Thread.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Wrappers_Include.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FASM.cpp" />
+    <ClCompile Include="Injector.cpp" />
+    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="Module.cpp" />
     <ClCompile Include="NoMagic.cpp" />
+    <ClCompile Include="Process.cpp" />
+    <ClCompile Include="Thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

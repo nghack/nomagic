@@ -37,7 +37,7 @@ namespace NoMagic
 		bool bInProcess;
 
 		///Lie&szlig;t die Basiadresse der .exe
-		void GetBaseAddress(DWORD procID, const TCHAR* name);
+		void GetBaseAddress(Wrappers::Process& process);
 
 		/**
 		L&auml;dt die in path angegebene .dll in den ge&ouml;ffneten Prozess.
@@ -181,13 +181,13 @@ namespace NoMagic
 		\param relative Wenn == true dann wird die angegebene Adresse zur Basis hinzugerechnet.
 		\return ausgelesener Wert.
 		*/
-		template <typename type> type Read(UINT_PTR address, bool relative = false) const
+		template <typename type>
+		type Read(UINT_PTR address, bool relative = false) const
 		{
-			type buffer;
-			LPCVOID addr = reinterpret_cast<LPVOID>(relative ? address+baseAddress : address);
-			W32_CALL(ReadProcessMemory(process, addr, &buffer, sizeof(buffer), nullptr));
-
-			return buffer;
+			if(relative)
+				MAGIC_CALL( return Wrappers::Memory::Read<type>(process, address, baseAddress); )
+			else
+				MAGIC_CALL( return Wrappers::Memory::Read<type>(process, address); )
 		}
 		
 		/**
@@ -205,10 +205,13 @@ namespace NoMagic
 		\param address Die Adresse, an der wir schreiben m&ouml;chten.
 		\param relative Wenn == true dann wird die angegebene Adresse zur Basis hinzugerechnet.
 		*/
-		template <typename type> void Write(UINT_PTR address, type value, bool relative = false) const
+		template <typename type>
+		void Write(UINT_PTR address, type value, bool relative = false) const
 		{
-			LPVOID addr = reinterpret_cast<LPVOID>(relative ? address+baseAddress : address);
-			W32_CALL(WriteProcessMemory(process, addr, &value, sizeof(value), nullptr));
+			if(relative)
+				MAGIC_CALL( Wrappers::Memory::Write<type>(process, address, value, baseAddress); )
+			else
+				MAGIC_CALL( Wrappers::Memory::Write<type>(process, address, value, baseAddress); )
 		}
 		
 		/**

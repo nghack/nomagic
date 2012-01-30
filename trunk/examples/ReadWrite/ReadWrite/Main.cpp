@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	{
 		nm.OpenProcess(_T("Wow.exe"));
 		//Wir lesen aus, ob die Konsole geöffnet ist (nur für WoW 3.3.5a!)
-		BOOL consoleOpen = nm.Read<BOOL>(0xCA1978, false);
+		BOOL consoleOpen = nm.Read<BOOL>(0xCA1978);
 
 		//Here's my key, Philosophy. A freak like me, just needs infinity!
 		while(true)
@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 			else
 				consoleOpen = FALSE;
 			//... und teilen die Änderung WoW mit
-			nm.Write<BOOL>(0xCA1978, consoleOpen, false);
+			nm.Write<BOOL>(0xCA1978, consoleOpen);
 			std::cin.get();
 		}
 	}

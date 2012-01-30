@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Injection", "Injection\Injection.vcxproj", "{7C398BA6-6310-4F6E-BFE8-13958750D71C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HackMe", "HackMe\HackMe.vcxproj", "{EFFE2E1B-4FC1-4D61-ADD0-BDDE9EBE01C6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "injectMe", "injectMe\injectMe.vcxproj", "{37098697-A319-4BFB-BD9C-84F61F3D64F6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C398BA6-6310-4F6E-BFE8-13958750D71C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7C398BA6-6310-4F6E-BFE8-13958750D71C}.Debug|Win32.Build.0 = Debug|Win32
+		{7C398BA6-6310-4F6E-BFE8-13958750D71C}.Release|Win32.ActiveCfg = Release|Win32
+		{7C398BA6-6310-4F6E-BFE8-13958750D71C}.Release|Win32.Build.0 = Release|Win32
+		{EFFE2E1B-4FC1-4D61-ADD0-BDDE9EBE01C6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EFFE2E1B-4FC1-4D61-ADD0-BDDE9EBE01C6}.Debug|Win32.Build.0 = Debug|Win32
+		{EFFE2E1B-4FC1-4D61-ADD0-BDDE9EBE01C6}.Release|Win32.ActiveCfg = Release|Win32
+		{EFFE2E1B-4FC1-4D61-ADD0-BDDE9EBE01C6}.Release|Win32.Build.0 = Release|Win32
+		{37098697-A319-4BFB-BD9C-84F61F3D64F6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{37098697-A319-4BFB-BD9C-84F61F3D64F6}.Debug|Win32.Build.0 = Debug|Win32
+		{37098697-A319-4BFB-BD9C-84F61F3D64F6}.Release|Win32.ActiveCfg = Release|Win32
+		{37098697-A319-4BFB-BD9C-84F61F3D64F6}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
