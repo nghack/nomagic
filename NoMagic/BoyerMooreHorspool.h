@@ -38,7 +38,7 @@ namespace NoMagic
 			*/
 			UINT_PTR Utilize(byteString pattern, std::vector<bool>& mask, BYTE* begin, BYTE* end)
 			{
-				int length = pattern.length();
+				int length = pattern.length() - 1;
 				int last = length - 1;
 				int init = length;
 				int* skipTable = new int[256];

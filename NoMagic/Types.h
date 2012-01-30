@@ -25,6 +25,9 @@ namespace NoMagic
 	typedef std::iterator<std::input_iterator_tag, BYTE> byteIterator;
 	typedef std::vector<BYTE>::iterator byteVectorIterator;
 
+	#define _using(_namespace) { using _namespace;
+	#define _endusing }
+
 	class MagicException
 	{
 		std::string msg;
@@ -35,6 +38,9 @@ namespace NoMagic
 		int GetError() { return error; }
 	};
 
+	///We do not handle Exceptions of any kind with this call
+	#define MAGIC_CALL(fun) try { fun; } catch(...) { throw; }
+	///Throws MagicException if the winapi functions fails.
 	#define W32_CALL(fun) if(FALSE == fun) throw ::NoMagic::MagicException(#fun, GetLastError())
 
 	/**

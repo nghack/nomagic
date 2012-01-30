@@ -29,72 +29,55 @@ namespace NoMagic
 			CloseHandle(process);
 	}
 
-	void NoMagic::GetBaseAddress(DWORD procID, const TCHAR* name)
+	void NoMagic::GetBaseAddress(Wrappers::Process& process)
 	{
-		MODULEENTRY32 modEntry;
-
-		HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, procID);
-		modEntry.dwSize = sizeof(MODULEENTRY32);
-
-		if(Module32First(hSnap, &modEntry))
+		using Wrappers::Module;
+		try
 		{
-			do 
+			std::vector<Module> modules = Module::GetModules(process);
+
+			std::for_each(modules.begin(), modules.end(), [&](Module module)
 			{
-				if(_tcsicmp(modEntry.szModule, name) == 0)
+				if(process.GetName() == module.GetName())
 				{
-					baseAddress = (DWORD)modEntry.modBaseAddr;
-					moduleSize = modEntry.modBaseSize;
+					baseAddress = module.GetBaseAddress();
+					moduleSize = module.GetSize();
 					return;
 				}
-			} while (Module32Next(hSnap, &modEntry));
-
-			throw MagicException("Can not find module");
+			});
+		}
+		catch(...)
+		{
+			throw;
 		}
 	}
 
 	DWORD NoMagic::OpenProcess(tstring const& name)
 	{
-		PROCESSENTRY32 pe32;
-		HANDLE hSnapshot = NULL;
-
-		ZeroMemory(&pe32, sizeof(PROCESSENTRY32));
-		pe32.dwSize = sizeof(PROCESSENTRY32);
-		hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-
-		if(Process32First(hSnapshot, &pe32) )
+		_using(Wrappers::Process)
 		{
-			do 
+			std::vector<Process> procs;
+			try
 			{
-				if(_tcsicmp(pe32.szExeFile, name.c_str()) == 0)
-				{
-					try 
-					{
-						GetBaseAddress(pe32.th32ProcessID, name.c_str());
-					}
-					catch(...)
-					{
-						throw;
-					}
-					procID = pe32.th32ProcessID;
-					break;
-				}
-			} while (Process32Next(hSnapshot, &pe32));
-		}
-
-		process = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, procID);
-		if(!process)
-			throw MagicException("Can not open process!", GetLastError());
-
-		return procID;
+				procs = Process::GetProcessesByName(name);
+				procs[0].OpenProcess();
+				GetBaseAddress(procs[0]);
+			}
+			catch(...)
+			{
+				throw;
+			}
+			this->process = procs[0].GetHandle();
+			this->procID = procs[0].GetId();
+			return procs[0].GetId();
+		} _endusing
 	}
 	
 	UINT_PTR NoMagic::SearchPattern(byteString const& pattern, std::vector<bool>& mask, Algorithm::IPatternAlgorithm& algorithm) const
 	{
 		if(bInProcess)
 		{
-			BYTE* begin = reinterpret_cast<BYTE*>(baseAddress + 0x1000);
-			BYTE* end = reinterpret_cast<BYTE*>(moduleSize-0x1000);
-			UINT_PTR ret = algorithm.Utilize(pattern, mask, begin, end);
+			UINT_PTR ret = Wrappers::Memory::FindPattern(baseAddress+0x1000, baseAddress+moduleSize-0x1000, pattern, mask, algorithm);
 			return ret != 0 ? baseAddress + 0x1000 + ret : ret;
 		}
 		else
@@ -119,24 +102,7 @@ namespace NoMagic
 
 	void NoMagic::SetDebugPrivileges() const
 	{
-		TOKEN_PRIVILEGES tp;
-		HANDLE hToken;
-
-		if(LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &tp.Privileges[0].Luid))
-		{
-			if(OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken))
-			{
-				if(hToken != INVALID_HANDLE_VALUE)
-				{
-					tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-					tp.PrivilegeCount = 1;
-					AdjustTokenPrivileges(hToken, FALSE, &tp, 0, nullptr, nullptr);
-					CloseHandle(hToken);
-				}
-			}
-		}
-		else
-			throw MagicException("Can not lookup privilege value!", GetLastError());
+		Wrappers::Process::SetDebugPrivileges();
 	}
 
 	PBYTE NoMagic::HookFunction(PBYTE targetFunction, PBYTE newFunction) const
@@ -151,22 +117,27 @@ namespace NoMagic
 
 	void NoMagic::LoadDLLIntoProcess(tstring const& path, HMODULE& outLoadedModule) const
 	{
-		PVOID addr = VirtualAllocEx(process, nullptr, path.size() + 1, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-		if(nullptr == addr)
-			throw MagicException("VirtualAllocEx failed!", GetLastError());
+		_using(Wrappers::Memory)
+		{
+			UINT_PTR addr = Memory::Allocate(process, 0, path.size() + 1);
+			if(addr == 0)
+				throw MagicException("VirtualAllocEx failed!", GetLastError());
 
-		W32_CALL(WriteProcessMemory(process, addr, reinterpret_cast<LPCVOID>(path.c_str()), path.length() + 1, nullptr));
+			MAGIC_CALL( Memory::WriteString(process, addr, path); )
 		
-		HANDLE hThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(LoadLibraryA), addr, 0, nullptr);
-		if(nullptr == hThread)
-			throw MagicException("CreateRemoteThread failed!", GetLastError());
+			HANDLE hThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(LoadLibraryA)
+				, reinterpret_cast<LPVOID>(addr), 0, nullptr);
+			if(nullptr == hThread)
+				throw MagicException("CreateRemoteThread failed!", GetLastError());
 
-		if(0 != WaitForSingleObject(hThread, INFINITE))
-			throw MagicException("WaitForSingleObject failed!", GetLastError());
-		DWORD loadedModule = 0;
-		W32_CALL(GetExitCodeThread( hThread, &loadedModule ));
-		outLoadedModule = reinterpret_cast<HMODULE>(loadedModule);
-		W32_CALL(VirtualFreeEx(process, addr, 0, MEM_RELEASE));
+			if(0 != WaitForSingleObject(hThread, INFINITE))
+				throw MagicException("WaitForSingleObject failed!", GetLastError());
+			DWORD loadedModule = 0;
+			W32_CALL(GetExitCodeThread( hThread, &loadedModule ));
+			outLoadedModule = reinterpret_cast<HMODULE>(loadedModule);
+
+			MAGIC_CALL( Memory::FreeMemory(process, addr, 0); )
+		}_endusing
 	}
 
 	void NoMagic::FindStartFunctionAddress(HMODULE& loadedModule, tstring const& path, UINT_PTR& outStartAddress) const
@@ -242,9 +213,7 @@ namespace NoMagic
 	
 	DWORD NoMagic::Protect(UINT_PTR address, DWORD numBytes, DWORD newProtect) const
 	{
-		DWORD oldProtect = 0;
-		W32_CALL(VirtualProtect(reinterpret_cast<LPVOID>(address), numBytes, newProtect, &oldProtect));
-		return oldProtect;
+		MAGIC_CALL( return Wrappers::Memory::Protect(address, numBytes, newProtect); )
 	}
 
 	DWORD* NoMagic::GetVirtualMethod(LPVOID object, DWORD vTableIndex) const
@@ -255,27 +224,18 @@ namespace NoMagic
 
 	std::string NoMagic::ReadString(UINT_PTR address, bool relative) const
 	{
-		CHAR buffer[513] = {};
-		std::stringstream sstream;
-
-		UINT_PTR addr = relative ? address+baseAddress : address;
-
-		do
-		{
-			W32_CALL(ReadProcessMemory(process, reinterpret_cast<LPCVOID>(addr), buffer, 512, nullptr));
-			addr += 512;
-			sstream << buffer;
-		} while(strlen(buffer) == 512);
-
-		
-		
-		return sstream.str();
+		if(relative)
+			MAGIC_CALL( return Wrappers::Memory::ReadString(process, address, baseAddress); )
+		else
+			MAGIC_CALL( return Wrappers::Memory::ReadString(process, address); )
 	}
 	
 	void NoMagic::WriteString(UINT_PTR address, std::string value, bool relative) const
 	{
-		LPVOID addr = reinterpret_cast<LPVOID>(relative ? address+baseAddress : address);
-		W32_CALL(WriteProcessMemory(process, addr, value.c_str(), value.length() + 1, nullptr));
+		if(relative)
+			MAGIC_CALL( Wrappers::Memory::WriteString(process, address, value, baseAddress); )
+		else
+			MAGIC_CALL( Wrappers::Memory::WriteString(process, address, value); )
 	}
 
 	HANDLE NoMagic::GetProcessHandle() const { return process; }

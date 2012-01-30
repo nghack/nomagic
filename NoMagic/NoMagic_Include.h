@@ -22,22 +22,12 @@
 #pragma comment(lib, "psapi.lib")
 #pragma comment(lib, "detours.lib")
 
-#include <Windows.h>
-#include <tchar.h>
-#include <Psapi.h>
-#include <tlhelp32.h>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <sstream>
+#include "STD_Include.h"
 
 #include "Types.h"
-#include "FASM.h"
 
-#include "IAlgorithm.h"
-#include "IPatternAlgorithm.h"
-#include "BoyerMooreHorspool.h"
+#include "Algorithm_Include.h"
+#include "Wrappers_Include.h"
 
 #include "detours.h"
 #include "NoMagic.h"
