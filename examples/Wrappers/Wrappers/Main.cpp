@@ -1,8 +1,8 @@
 #include "../../../NoMagic/Wrappers_Include.h"
 #if (DEBUG)
-#pragma comment(lib, "NoMagic_d.lib")
+#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic_d.lib")
 #else
-#pragma comment(lib, "NoMagic.lib")
+#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic.lib")
 #endif
 
 
@@ -11,11 +11,11 @@ int main()
 {
 	_using(namespace NoMagic::Wrappers)
 	{
-		Process currentProcess = Process::GetCurrentProcess();
+		auto currentProcess = Process::GetCurrentProcess();
 
-		std::vector<Module> myModules = Module::GetModules(currentProcess);
+		auto myModules = Module::GetModules(currentProcess);
 
-		std::for_each(myModules.begin(), myModules.end(), [](Module& module)
+		std::for_each(std::begin(myModules), std::end(myModules), [](Module const& module)
 		{
 			std::cout	<< "Module:\n"
 						<< "\tName:\t\t" << module.GetName() << "\n"

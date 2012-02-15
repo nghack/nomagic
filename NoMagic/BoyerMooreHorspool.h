@@ -36,7 +36,7 @@ namespace NoMagic
 			\param end Pointer zum letzten Byte
 			\return Adresse, an der das Pattern gefunden wurde oder NULL, wenn nichts gefunden wurde.
 			*/
-			UINT_PTR Utilize(byteString pattern, std::vector<bool>& mask, BYTE* begin, BYTE* end)
+			UINT_PTR Utilize(byteString pattern, std::vector<bool> const& mask, BYTE* begin, BYTE* end)
 			{
 				int length = pattern.length() - 1;
 				int last = length - 1;

@@ -26,8 +26,8 @@ namespace NoMagic
 		Injector();
 		~Injector(void);
 
-		static UINT_PTR Inject(Wrappers::Process& process, tstring const& dllPath, Wrappers::Module& outModule);
-		static void CallStart(Wrappers::Process& process, UINT_PTR startAddress);
-		static void UnloadDll(Wrappers::Process& process, Wrappers::Module& dll);
+		static UINT_PTR Inject(Wrappers::Process const& process, tstring const& dllPath, Wrappers::Module& outModule);
+		static void CallStart(Wrappers::Process const& process, UINT_PTR startAddress);
+		static void UnloadDll(Wrappers::Process const& process, Wrappers::Module const& dll);
 	};
 }

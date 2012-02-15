@@ -62,9 +62,10 @@ namespace NoMagic
 			return retChar;
 		}
 
-		std::vector<BYTE> Assembler::Assemble(std::string& instructions) const
+		std::vector<BYTE> Assembler::Assemble(const std::string& instructions) const
 		{
-			int semicolon = instructions.find(';');
+			auto semicolon = instructions.find(';');
+			auto code = instructions;
 
 			if(semicolon == -1)
 				throw MagicException("Semicolon is missing!");
@@ -73,25 +74,22 @@ namespace NoMagic
 
 			do
 			{
-				std::string substr = instructions.substr(0, semicolon);
+				auto substr = code.substr(0, semicolon);
 				int len = 0;
 				char* buffer;
-				try {
-					buffer = toAsm(substr.c_str(), len);
-				} catch(...) {
-					throw;
-				}
+
+				MAGIC_CALL( buffer = toAsm(substr.c_str(), len); )
 
 				for(int i = 0; i < len; ++i)
 				{
-					BYTE byte = *(reinterpret_cast<BYTE*>(&buffer[i]));
+					auto byte = *(reinterpret_cast<BYTE*>(&buffer[i]));
 					retVector.push_back(byte);
 				}
 				
 				delete[] buffer;
 
-				instructions = instructions.substr(semicolon+1);
-				semicolon = instructions.find(';');
+				code = code.substr(semicolon+1);
+				semicolon = code.find(';');
 			} while(semicolon != -1);
 
 			return retVector;

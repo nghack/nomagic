@@ -30,75 +30,84 @@ namespace NoMagic
 		}
 
 		UINT_PTR Memory::FindPattern(UINT_PTR startAddress, UINT_PTR endAddress
-			, byteString const& pattern, std::vector<bool>& mask, Algorithm::IPatternAlgorithm& algorithm)
+			, byteString const& pattern, std::vector<bool> const& mask, Algorithm::IPatternAlgorithm& algorithm)
 		{
-			BYTE* begin = reinterpret_cast<BYTE*>(startAddress);
-			BYTE* end = reinterpret_cast<BYTE*>(endAddress);
+			auto begin = reinterpret_cast<BYTE*>(startAddress);
+			auto end = reinterpret_cast<BYTE*>(endAddress);
 			return algorithm.Utilize(pattern, mask, begin, end);
 		}
+		
+		PBYTE Memory::DetourFunction(const PBYTE targetFunction, const PBYTE newFunction)
+		{
+			return ::DetourFunction(targetFunction, newFunction);
+		}
 
+		BOOL Memory::RemoveDetour(const PBYTE origFunction, const PBYTE yourFunction)
+		{
+			return ::DetourRemove(origFunction, yourFunction);
+		}
 
 #pragma region Allocate
-		UINT_PTR Memory::Allocate(HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, 
+		UINT_PTR Memory::Allocate(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, 
 				AllocationType allocType, PageProtection protection)
 		{
-			UINT_PTR addr = address+baseAddress;
+			auto addr = address+baseAddress;
 			return reinterpret_cast<UINT_PTR>(VirtualAllocEx(process, reinterpret_cast<LPVOID>(address), size, allocType, protection));
 		}
 
-		UINT_PTR Memory::Allocate(HANDLE process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection)
+		UINT_PTR Memory::Allocate(const HANDLE process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection)
 		{
 			return Allocate(process, address, 0, size, allocType, protection);
 		}
 
-		UINT_PTR Memory::Allocate(HANDLE process, UINT_PTR address, DWORD size)
+		UINT_PTR Memory::Allocate(const HANDLE process, UINT_PTR address, DWORD size)
 		{
 			return Allocate(process, address, 0, size, AllocType_commit, PageProt_execute_readwrite);
 		}
 		
-		UINT_PTR Memory::Allocate(Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection)
+		UINT_PTR Memory::Allocate(const Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection)
 		{
 			return Allocate(process.GetHandle(), address, baseAddress, size, allocType, protection);
 		}
 
-		UINT_PTR Memory::Allocate(Process& process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection)
+		UINT_PTR Memory::Allocate(const Process& process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection)
 		{
 			return Allocate(process.GetHandle(), address, 0, size, allocType, protection);
 		}
 
-		UINT_PTR Memory::Allocate(Process& process, UINT_PTR address, DWORD size)
+		UINT_PTR Memory::Allocate(const Process& process, UINT_PTR address, DWORD size)
 		{
 			return Allocate(process.GetHandle(), address, 0, size, AllocType_commit, PageProt_execute_readwrite);
 		}
 #pragma endregion
 
 #pragma region FreeMemory
-		void Memory::FreeMemory(HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, FreeType freeType)
+		void Memory::FreeMemory(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, FreeType freeType)
 		{
 			W32_CALL( VirtualFreeEx(process, reinterpret_cast<LPVOID>(address + baseAddress), size, freeType) );
 		}
 
-		void Memory::FreeMemory(HANDLE process, UINT_PTR address, DWORD size)
+		void Memory::FreeMemory(const HANDLE process, UINT_PTR address, DWORD size)
 		{
 			MAGIC_CALL( FreeMemory(process, address, 0, size, FreeType_release) );
 		}
 		
-		void Memory::FreeMemory(HANDLE process, UINT_PTR address, DWORD size, FreeType freeType)
+		void Memory::FreeMemory(const HANDLE process, UINT_PTR address, DWORD size, FreeType freeType)
 		{
 			MAGIC_CALL( FreeMemory(process, address, 0, size, freeType) );
 		}
 		
-		void Memory::FreeMemory(Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, FreeType freeType)
+		void Memory::FreeMemory(const Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, FreeType freeType)
 		{
 			W32_CALL( VirtualFreeEx(process.GetHandle(), reinterpret_cast<LPVOID>(address + baseAddress), size, freeType) );
 		}
 
-		void Memory::FreeMemory(Process& process, UINT_PTR address, DWORD size, FreeType freeType)
+		void Memory::FreeMemory(const Process& process, UINT_PTR address, DWORD size, FreeType freeType)
 		{
 			W32_CALL( VirtualFreeEx(process.GetHandle(), reinterpret_cast<LPVOID>(address), size, freeType) );
 		}
 
-		void Memory::FreeMemory(Process& process, UINT_PTR address)
+		void Memory::FreeMemory(const Process& process, UINT_PTR address)
 		{
 			W32_CALL( VirtualFreeEx(process.GetHandle(), reinterpret_cast<LPVOID>(address), 0, FreeType_release) );
 		}
@@ -106,7 +115,7 @@ namespace NoMagic
 #pragma endregion
 
 #pragma region Read
-		std::string Memory::ReadString(HANDLE process, UINT_PTR address, UINT_PTR baseAddress)
+		std::string Memory::ReadString(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress)
 		{
 			CHAR buffer[513] = {};
 			std::stringstream sstream;
@@ -123,13 +132,13 @@ namespace NoMagic
 			return sstream.str();
 		}
 
-		std::string Memory::ReadString(HANDLE process, UINT_PTR address)
+		std::string Memory::ReadString(const HANDLE process, UINT_PTR address)
 		{
 			MAGIC_CALL( return ReadString(process, address, 0); )
 		}
 		
 
-		std::string Memory::ReadString(Process& process, UINT_PTR address, UINT_PTR baseAddress)
+		std::string Memory::ReadString(const Process& process, UINT_PTR address, UINT_PTR baseAddress)
 		{
 			CHAR buffer[513] = {};
 			std::stringstream sstream;
@@ -146,7 +155,7 @@ namespace NoMagic
 			return sstream.str();
 		}
 
-		std::string Memory::ReadString(Process& process, UINT_PTR address)
+		std::string Memory::ReadString(const Process& process, UINT_PTR address)
 		{
 			MAGIC_CALL( return ReadString(process, address, 0); )
 		}
@@ -154,29 +163,29 @@ namespace NoMagic
 
 #pragma region Write
 
-		DWORD Memory::WriteString(HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
+		DWORD Memory::WriteString(const HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
 		{
 			SIZE_T numWritten = 0;
-			UINT_PTR addr = address+baseAddress;
+			auto addr = address+baseAddress;
 			W32_CALL(WriteProcessMemory(process, reinterpret_cast<LPVOID>(addr), value.c_str(), value.length() + 1, &numWritten));
 			return numWritten;
 		}
 
-		DWORD Memory::WriteString(HANDLE process, UINT_PTR address, std::string const& value)
+		DWORD Memory::WriteString(const HANDLE process, UINT_PTR address, std::string const& value)
 		{
 			MAGIC_CALL( return WriteString(process, address, value, 0); )
 		}
 
 		
-		DWORD Memory::WriteString(Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
+		DWORD Memory::WriteString(const Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
 		{
 			SIZE_T numWritten = 0;
-			UINT_PTR addr = address+baseAddress;
+			auto addr = address+baseAddress;
 			W32_CALL(WriteProcessMemory(process.GetHandle(), reinterpret_cast<LPVOID>(addr), value.c_str(), value.length() + 1, &numWritten));
 			return numWritten;
 		}
 
-		DWORD Memory::WriteString(Process& process, UINT_PTR address, std::string const& value)
+		DWORD Memory::WriteString(const Process& process, UINT_PTR address, std::string const& value)
 		{
 			MAGIC_CALL( return WriteString(process, address, value, 0); )
 		}

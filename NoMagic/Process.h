@@ -30,7 +30,7 @@ namespace NoMagic
 
 		public:
 			explicit Process(DWORD processID);
-			explicit Process(PROCESSENTRY32 processEntry);
+			explicit Process(PROCESSENTRY32 const& processEntry);
 			virtual ~Process(void);
 
 			static std::vector<Process> GetProcesses();
@@ -38,7 +38,7 @@ namespace NoMagic
 
 			static Process GetProcessByWindowName(tstring const& windowName);
 			static Process GetProcessById(DWORD PID);
-			static Process GetProcessByHWND(HWND hwnd);
+			static Process GetProcessByHWND(const HWND hwnd);
 
 			static Process GetCurrentProcess();
 

@@ -41,7 +41,7 @@ namespace NoMagic
 			CloseHandle(hSnapshot);
 		}
 
-		Process::Process(PROCESSENTRY32 processEntry) : m_id(processEntry.th32ProcessID), m_handle(nullptr), m_name(processEntry.szExeFile)
+		Process::Process(PROCESSENTRY32 const& processEntry) : m_id(processEntry.th32ProcessID), m_handle(nullptr), m_name(processEntry.szExeFile)
 		{
 		}
 
@@ -101,7 +101,7 @@ namespace NoMagic
 
 		Process GetProcessByWindowName(tstring const& windowName)
 		{
-			HWND wnd = ::FindWindow(nullptr, windowName.c_str());
+			auto wnd = ::FindWindow(nullptr, windowName.c_str());
 
 			if(wnd == nullptr)
 				throw MagicException("Can not find Window!", GetLastError());

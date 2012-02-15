@@ -53,7 +53,7 @@ namespace NoMagic
 			
 			auto findModule = [&]() -> bool
 			{
-				HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, process.GetId());
+				auto hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, process.GetId());
 				W32_CALL( Module32First(hSnap, &modEntry) );
 
 				do 
@@ -87,7 +87,7 @@ namespace NoMagic
 			MODULEENTRY32 modEntry;
 			modEntry.dwSize = sizeof(MODULEENTRY32);
 			
-			HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, process.GetId());
+			auto hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, process.GetId());
 			W32_CALL( Module32First(hSnap, &modEntry) );
 			do 
 			{
@@ -104,7 +104,7 @@ namespace NoMagic
 
 		Module Module::FromLibrary(Process const& process, tstring const& libPath)
 		{
-			HMODULE hmod = LoadLibrary(libPath.c_str());
+			auto hmod = LoadLibrary(libPath.c_str());
 			if(hmod == nullptr)
 				throw MagicException("LoadLibrary failed!", GetLastError());
 
@@ -113,7 +113,7 @@ namespace NoMagic
 
 		UINT_PTR Module::GetProcAddress(tstring const& name)
 		{
-			UINT_PTR proc = reinterpret_cast<UINT_PTR>(::GetProcAddress(m_module, name.c_str()));
+			auto proc = reinterpret_cast<UINT_PTR>(::GetProcAddress(m_module, name.c_str()));
 			if(proc == 0)
 				throw MagicException("GetProcAddress failed!", GetLastError());
 

@@ -93,7 +93,7 @@ namespace NoMagic
 		Thread Thread::CreateRemoteThread(HANDLE process, UINT_PTR startAddress, LPVOID parameter)
 		{
 			DWORD threadId = 0;
-			HANDLE handle = ::CreateRemoteThread(process, nullptr, 0, 
+			auto handle = ::CreateRemoteThread(process, nullptr, 0, 
 				reinterpret_cast<LPTHREAD_START_ROUTINE>(startAddress), parameter, 0, &threadId);
 
 			if(handle == nullptr)
@@ -110,7 +110,7 @@ namespace NoMagic
 		Thread Thread::CreateRemoteThread(Process const& process, UINT_PTR startAddress, LPVOID parameter)
 		{
 			DWORD threadId = 0;
-			HANDLE handle = ::CreateRemoteThread(process.GetHandle(), nullptr, 0, 
+			auto handle = ::CreateRemoteThread(process.GetHandle(), nullptr, 0, 
 				reinterpret_cast<LPTHREAD_START_ROUTINE>(startAddress), parameter, 0, &threadId);
 
 			if(handle == nullptr)

@@ -37,4 +37,5 @@ namespace NoMagic
 #include "Process.h"
 #include "Thread.h"
 #include "Module.h"
+#include "detours.h"
 #include "Memory.h"

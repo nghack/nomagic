@@ -63,37 +63,40 @@ namespace NoMagic
 			static DWORD Protect(UINT_PTR address, DWORD numBytes, DWORD newProtect);
 
 			static UINT_PTR FindPattern(UINT_PTR startAddress, UINT_PTR endAddress
-				, byteString const& pattern, std::vector<bool>& mask, Algorithm::IPatternAlgorithm& algorithm);
+				, byteString const& pattern, std::vector<bool> const& mask, Algorithm::IPatternAlgorithm& algorithm);
+
+			static PBYTE DetourFunction(const PBYTE targetFunction, const PBYTE newFunction);
+			static BOOL RemoveDetour(const PBYTE origFunction, const PBYTE yourFunction);
 			
 			#pragma region Allocate
-			static UINT_PTR Allocate(HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection);
-			static UINT_PTR Allocate(HANDLE process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection);
-			static UINT_PTR Allocate(HANDLE process, UINT_PTR address, DWORD size);
+			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection);
+			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection);
+			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, DWORD size);
 
-			static UINT_PTR Allocate(Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection);
-			static UINT_PTR Allocate(Process& process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection);
-			static UINT_PTR Allocate(Process& process, UINT_PTR address, DWORD size);
+			static UINT_PTR Allocate(const Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection);
+			static UINT_PTR Allocate(const Process& process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection);
+			static UINT_PTR Allocate(const Process& process, UINT_PTR address, DWORD size);
 			#pragma endregion
 
 			#pragma region FreeMemory
-			static void FreeMemory(HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, FreeType freeType);
-			static void FreeMemory(HANDLE process, UINT_PTR address, DWORD size, FreeType freeType);
-			static void FreeMemory(HANDLE process, UINT_PTR address, DWORD size);
+			static void FreeMemory(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, FreeType freeType);
+			static void FreeMemory(const HANDLE process, UINT_PTR address, DWORD size, FreeType freeType);
+			static void FreeMemory(const HANDLE process, UINT_PTR address, DWORD size);
 
-			static void FreeMemory(Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, FreeType freeType);
-			static void FreeMemory(Process& process, UINT_PTR address, DWORD size, FreeType freeType);
-			static void FreeMemory(Process& process, UINT_PTR address);
+			static void FreeMemory(const Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, FreeType freeType);
+			static void FreeMemory(const Process& process, UINT_PTR address, DWORD size, FreeType freeType);
+			static void FreeMemory(const Process& process, UINT_PTR address);
 			#pragma endregion
 
 			#pragma region ReadMethods
-			static std::string ReadString(HANDLE process, UINT_PTR address, UINT_PTR baseAddress);
-			static std::string ReadString(HANDLE process, UINT_PTR address);
+			static std::string ReadString(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress);
+			static std::string ReadString(const HANDLE process, UINT_PTR address);
 
-			static std::string ReadString(Process& process, UINT_PTR address, UINT_PTR baseAddress);
-			static std::string ReadString(Process& process, UINT_PTR address);
+			static std::string ReadString(const Process& process, UINT_PTR address, UINT_PTR baseAddress);
+			static std::string ReadString(const Process& process, UINT_PTR address);
 			
 			template <typename type>
-			static type Read(HANDLE process, UINT_PTR address, UINT_PTR baseAddress)
+			static type Read(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress)
 			{
 				type buffer;
 				UINT_PTR addr = address+baseAddress;
@@ -103,13 +106,13 @@ namespace NoMagic
 			}
 			
 			template <typename type>
-			static type Read(HANDLE process, UINT_PTR address)
+			static type Read(const HANDLE process, UINT_PTR address)
 			{
 				MAGIC_CALL( return Read<type>(process, address, 0) );
 			}
 			
 			template <typename type>
-			static type Read(Process& process, UINT_PTR address, UINT_PTR baseAddress)
+			static type Read(const Process& process, UINT_PTR address, UINT_PTR baseAddress)
 			{
 				type buffer;
 				UINT_PTR addr = address+baseAddress;
@@ -119,22 +122,22 @@ namespace NoMagic
 			}
 			
 			template <typename type>
-			static type Read(Process& process, UINT_PTR address)
+			static type Read(const Process& process, UINT_PTR address)
 			{
 				MAGIC_CALL( return Read<type>(process, address, 0) );
 			}
 			#pragma endregion
 
 			#pragma region WriteMethods
-			static DWORD WriteString(HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
-			static DWORD WriteString(HANDLE process, UINT_PTR address, std::string const& value);
+			static DWORD WriteString(const HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
+			static DWORD WriteString(const HANDLE process, UINT_PTR address, std::string const& value);
 
-			static DWORD WriteString(Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
-			static DWORD WriteString(Process& processs, UINT_PTR address, std::string const& value);
+			static DWORD WriteString(const Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
+			static DWORD WriteString(const Process& processs, UINT_PTR address, std::string const& value);
 
 			
 			template <typename type>
-			static SIZE_T Write(HANDLE process, UINT_PTR address, type const value, UINT_PTR baseAddress)
+			static SIZE_T Write(const HANDLE process, UINT_PTR address, type const value, UINT_PTR baseAddress)
 			{
 				SIZE_T numWritten = 0;
 				UINT_PTR addr = address+baseAddress;
@@ -144,7 +147,7 @@ namespace NoMagic
 			}
 
 			template <typename type>
-			static SIZE_T Write(Process& process, UINT_PTR address, type const value, UINT_PTR baseAddress)
+			static SIZE_T Write(const Process& process, UINT_PTR address, type const value, UINT_PTR baseAddress)
 			{
 				SIZE_T numWritten = 0;
 				UINT_PTR addr = address+baseAddress;
@@ -154,13 +157,13 @@ namespace NoMagic
 			}
 
 			template <typename type>
-			static SIZE_T Write(HANDLE process, UINT_PTR address, type const value)
+			static SIZE_T Write(const HANDLE process, UINT_PTR address, type const value)
 			{
 				MAGIC_CALL( return Write(process, address, value, 0) );
 			}
 
 			template <typename type>
-			static SIZE_T Write(Process& process, UINT_PTR address, type const value)
+			static SIZE_T Write(const Process& process, UINT_PTR address, type const value)
 			{
 				MAGIC_CALL( return Write(process, address, value, 0) );
 			}
