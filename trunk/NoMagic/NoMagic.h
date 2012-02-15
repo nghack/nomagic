@@ -37,7 +37,7 @@ namespace NoMagic
 		bool bInProcess;
 
 		///Lie&szlig;t die Basiadresse der .exe
-		void GetBaseAddress(Wrappers::Process& process);
+		void GetBaseAddress(Wrappers::Process const& process);
 
 		/**
 		L&auml;dt die in path angegebene .dll in den ge&ouml;ffneten Prozess.
@@ -54,7 +54,7 @@ namespace NoMagic
 		\param outStartAddress Die gefundene Adresse
 		\brief Wirft MagicException bei Fehlschlag
 		*/
-		void FindStartFunctionAddress(HMODULE& loadedModule, tstring const& path, UINT_PTR& outStartAddress) const;
+		void FindStartFunctionAddress(HMODULE const& loadedModule, tstring const& path, UINT_PTR& outStartAddress) const;
 
 		/**
 		Ruft die Funktion "Start" im fremden Prozess auf.
@@ -172,7 +172,7 @@ namespace NoMagic
 		\param vTableIndex Der Index der virtuellen Methode.
 		\return Pointer zur virtuellen Methode.
 		*/
-		DWORD* GetVirtualMethod(LPVOID object, DWORD vTableIndex) const;
+		const DWORD* GetVirtualMethod(LPVOID object, DWORD vTableIndex) const;
 
 		/**
 		Lie&szlig;t sizeof(type) Bytes aus dem Speicher. 

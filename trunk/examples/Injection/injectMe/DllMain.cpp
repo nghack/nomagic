@@ -1,13 +1,13 @@
 #include "../../../NoMagic/NoMagic_Include.h"
 #if (DEBUG)
-#pragma comment(lib, "NoMagic_d.lib")
+#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic_d.lib")
 NoMagic::byteString bString = "\xC6\x05\x01\x01\x01\x01\x01\xC7\x05\x01\x01\x01\x01\x01\x01\x01\x01\xC7\x45\xF8\x01\x01\x01\x01";
 std::vector<bool> patternMask = NoMagic::PatternMask::Make("xx????xxx????????xxx????", 'x');
 
 int findMeOffset = 9;
 int keepRunningOffset = 2;
 #else
-#pragma comment(lib, "NoMagic.lib")
+#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic.lib")
 NoMagic::byteString bString = "\x68\x01\x01\x01\x01\xC6\x05\x01\x01\x01\x01\x01";
 std::vector<bool> patternMask = NoMagic::PatternMask::Make("x????xx????x", 'x');
 int findMeOffset = 1;
@@ -25,19 +25,19 @@ extern "C" void __declspec(dllexport) Start()
 		noMagic.SetInProcess(true);
 
 		//Lets find the pattern
-		UINT_PTR pattern = noMagic.SearchPattern(bString, patternMask);
+		auto pattern = noMagic.SearchPattern(bString, patternMask);
 		if(pattern != 0)
 		{
 			//Get the pointer to the variable
-			UINT_PTR tmpPtr = *(reinterpret_cast<UINT_PTR*>(pattern+findMeOffset));
-			UINT_PTR* findMe = reinterpret_cast<UINT_PTR*>(tmpPtr);
+			auto tmpPtr = *(reinterpret_cast<UINT_PTR*>(pattern+findMeOffset));
+			auto findMe = reinterpret_cast<UINT_PTR*>(tmpPtr);
 
 			//Lets set the value to 100!
 			*findMe = 100;
 
 			//Now let us end the loop by setting keepRunning to false!
 			tmpPtr = *(reinterpret_cast<UINT_PTR*>(pattern+keepRunningOffset));
-			bool* keepRunning = reinterpret_cast<bool*>(tmpPtr);
+			auto keepRunning = reinterpret_cast<bool*>(tmpPtr);
 			*keepRunning = false;
 		}
 		else
@@ -45,7 +45,7 @@ extern "C" void __declspec(dllexport) Start()
 			std::cout << "Can not find pattern! Do you use Visual Studio 2010?" << std::endl;
 		}
 	}
-	catch(NoMagic::MagicException& e)
+	catch(NoMagic::MagicException const& e)
 	{
 		std::cout << e.GetMessage() << std::endl;
 	}

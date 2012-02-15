@@ -29,14 +29,14 @@ namespace NoMagic
 			CloseHandle(process);
 	}
 
-	void NoMagic::GetBaseAddress(Wrappers::Process& process)
+	void NoMagic::GetBaseAddress(Wrappers::Process const& process)
 	{
 		using Wrappers::Module;
 		try
 		{
-			std::vector<Module> modules = Module::GetModules(process);
+			auto modules = Module::GetModules(process);
 
-			std::for_each(modules.begin(), modules.end(), [&](Module module)
+			std::for_each(std::begin(modules), std::end(modules), [&](Module module)
 			{
 				if(process.GetName() == module.GetName())
 				{
@@ -60,6 +60,10 @@ namespace NoMagic
 			try
 			{
 				procs = Process::GetProcessesByName(name);
+
+				if(procs.size() <= 0)
+					throw MagicException("Can not find any processes!");
+
 				procs[0].OpenProcess();
 				GetBaseAddress(procs[0]);
 			}
@@ -77,20 +81,20 @@ namespace NoMagic
 	{
 		if(bInProcess)
 		{
-			UINT_PTR ret = Wrappers::Memory::FindPattern(baseAddress+0x1000, baseAddress+moduleSize-0x1000, pattern, mask, algorithm);
+			auto ret = Wrappers::Memory::FindPattern(baseAddress+0x1000, baseAddress+moduleSize-0x1000, pattern, mask, algorithm);
 			return ret != 0 ? baseAddress + 0x1000 + ret : ret;
 		}
 		else
 		{
 			std::vector<BYTE> bytes;
-			bytes.resize(moduleSize);
-			//Hacky?
-			LPVOID addr = reinterpret_cast<LPVOID>(const_cast<BYTE*>(bytes.begin()._Ptr));
+			bytes.resize(moduleSize-0x1000);
+			//Hacky? - should be fine, since I do reserve enough size. Report any crashes and I will find a better workarround
+			auto addr = reinterpret_cast<LPVOID>(const_cast<BYTE*>(bytes.begin()._Ptr));
 			ReadProcessMemory(process, LPVOID(baseAddress+0x1000), addr, SIZE_T(moduleSize-0x1000), 0);
 
-			BYTE* begin = reinterpret_cast<BYTE*>(bytes.begin()._Ptr);
-			BYTE* end = reinterpret_cast<BYTE*>(bytes.end()._Ptr);
-			UINT_PTR ret = algorithm.Utilize(pattern, mask, begin, end);
+			auto begin = reinterpret_cast<BYTE*>(bytes.begin()._Ptr);
+			auto end = reinterpret_cast<BYTE*>(bytes.end()._Ptr);
+			auto ret = algorithm.Utilize(pattern, mask, begin, end);
 			return ret != 0 ? baseAddress + 0x1000 + ret : ret;
 		}
 	}
@@ -107,25 +111,25 @@ namespace NoMagic
 
 	PBYTE NoMagic::HookFunction(PBYTE targetFunction, PBYTE newFunction) const
 	{
-		return DetourFunction(targetFunction, newFunction);
+		return Wrappers::Memory::DetourFunction(targetFunction, newFunction);
 	}
 
 	BOOL NoMagic::UnhookFunction(PBYTE origFunction, PBYTE yourFunction) const
 	{
-		return DetourRemove(origFunction, yourFunction);
+		return Wrappers::Memory::RemoveDetour(origFunction, yourFunction);
 	}
 
 	void NoMagic::LoadDLLIntoProcess(tstring const& path, HMODULE& outLoadedModule) const
 	{
 		_using(Wrappers::Memory)
 		{
-			UINT_PTR addr = Memory::Allocate(process, 0, path.size() + 1);
+			auto addr = Memory::Allocate(process, 0, path.size() + 1);
 			if(addr == 0)
 				throw MagicException("VirtualAllocEx failed!", GetLastError());
 
 			MAGIC_CALL( Memory::WriteString(process, addr, path); )
 		
-			HANDLE hThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(LoadLibraryA)
+			auto hThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(LoadLibraryA)
 				, reinterpret_cast<LPVOID>(addr), 0, nullptr);
 			if(nullptr == hThread)
 				throw MagicException("CreateRemoteThread failed!", GetLastError());
@@ -140,17 +144,17 @@ namespace NoMagic
 		}_endusing
 	}
 
-	void NoMagic::FindStartFunctionAddress(HMODULE& loadedModule, tstring const& path, UINT_PTR& outStartAddress) const
+	void NoMagic::FindStartFunctionAddress(HMODULE const& loadedModule, tstring const& path, UINT_PTR& outStartAddress) const
 	{
-		HMODULE hmod = LoadLibrary(path.c_str());
+		auto hmod = LoadLibrary(path.c_str());
 		if(hmod == nullptr)
 			throw MagicException("LoadLibrary failed!", GetLastError());
 
-		DWORD procAddr = reinterpret_cast<DWORD>(GetProcAddress(hmod, "Start"));
+		auto procAddr = reinterpret_cast<DWORD>(GetProcAddress(hmod, "Start"));
 		if(procAddr == NULL)
 			throw MagicException("GetProcAddress failed!", GetLastError());
 
-		DWORD diff = reinterpret_cast<DWORD>(loadedModule) - reinterpret_cast<DWORD>(hmod);
+		auto diff = reinterpret_cast<DWORD>(loadedModule) - reinterpret_cast<DWORD>(hmod);
 		outStartAddress = procAddr + diff;
 		
 		W32_CALL(FreeLibrary(hmod));
@@ -158,17 +162,17 @@ namespace NoMagic
 
 	void NoMagic::CallStart(UINT_PTR startFunctionAddress) const
 	{
-		PVOID addr = VirtualAllocEx(process, nullptr, sizeof(UINT_PTR), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+		auto addr = VirtualAllocEx(process, nullptr, sizeof(UINT_PTR), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 		if(nullptr == addr)
 			throw MagicException("VirtualAllocEx failed!", GetLastError());
 
 		SIZE_T written = 0;
 
-		DWORD startAddr = static_cast<DWORD>(startFunctionAddress);
+		auto startAddr = static_cast<DWORD>(startFunctionAddress);
 
 		W32_CALL(WriteProcessMemory(process, addr, reinterpret_cast<LPCVOID>(&startAddr), sizeof(LPCVOID), nullptr)); 
 
-		HANDLE hThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(startFunctionAddress), addr, 0, nullptr);
+		auto hThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(startFunctionAddress), addr, 0, nullptr);
 		if(nullptr == hThread)
 			throw MagicException("CreateRemoteThread failed!", GetLastError());
 		
@@ -201,7 +205,7 @@ namespace NoMagic
 
 	void NoMagic::UnloadDll(UINT_PTR address) const
 	{
-		HANDLE hThread = CreateRemoteThread( process, nullptr, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, (PVOID)address, 0, nullptr);
+		auto hThread = CreateRemoteThread( process, nullptr, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, (PVOID)address, 0, nullptr);
 		if(nullptr == hThread)
 			throw MagicException("CreateRemoteThread failed!", GetLastError());
 
@@ -216,9 +220,9 @@ namespace NoMagic
 		MAGIC_CALL( return Wrappers::Memory::Protect(address, numBytes, newProtect); )
 	}
 
-	DWORD* NoMagic::GetVirtualMethod(LPVOID object, DWORD vTableIndex) const
+	const DWORD* NoMagic::GetVirtualMethod(LPVOID object, DWORD vTableIndex) const
 	{
-		LPDWORD** __vmt = reinterpret_cast<LPDWORD**>(object);
+		auto __vmt = reinterpret_cast<LPDWORD**>(object);
 		return (*__vmt)[vTableIndex];
 	}
 

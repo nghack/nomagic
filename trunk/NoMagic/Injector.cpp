@@ -28,7 +28,7 @@ namespace NoMagic
 	{
 	}
 
-	UINT_PTR Injector::Inject(Wrappers::Process& process, tstring const& dllPath, Wrappers::Module& outModule)
+	UINT_PTR Injector::Inject(Wrappers::Process const& process, tstring const& dllPath, Wrappers::Module& outModule)
 	{
 		_using(namespace Wrappers)
 		{
@@ -76,7 +76,7 @@ namespace NoMagic
 		}_endusing
 	}
 
-	void Injector::CallStart(Wrappers::Process& process, UINT_PTR startAddress)
+	void Injector::CallStart(Wrappers::Process const& process, UINT_PTR startAddress)
 	{
 		if(startAddress == 0)
 			throw MagicException("Are you kidding me? -.-");
@@ -103,7 +103,7 @@ namespace NoMagic
 		} _endusing
 	}
 
-	void Injector::UnloadDll(Wrappers::Process& process, Wrappers::Module& dll)
+	void Injector::UnloadDll(Wrappers::Process const& process, Wrappers::Module const& dll)
 	{
 		_using(namespace Wrappers)
 		{

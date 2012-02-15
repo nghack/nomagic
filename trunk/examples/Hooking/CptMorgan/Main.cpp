@@ -1,8 +1,8 @@
 #include "../../../NoMagic/NoMagic_Include.h"
 #if (DEBUG)
-#pragma comment(lib, "NoMagic_d.lib")
+#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic_d.lib")
 #else
-#pragma comment(lib, "NoMagic.lib")
+#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic.lib")
 #endif
 
 //Funktionstyp
@@ -22,12 +22,12 @@ int main(int argc, char** argv)
 	NoMagic::NoMagic nm;
 
 	//Wir speichern die Adresse der Funktion, die wir hooken möchten
-	PBYTE msgBoxA = reinterpret_cast<PBYTE>(MessageBoxA);
+	auto msgBoxA = reinterpret_cast<PBYTE>(MessageBoxA);
 	//Die Funktion, die anstelle der originalen Funktion aufgerufen werden soll
-	PBYTE myMsgBox = reinterpret_cast<PBYTE>(MyMessageBox);
+	auto myMsgBox = reinterpret_cast<PBYTE>(MyMessageBox);
 
 	//Wir schreiben den Hook und merken uns wo die originale Funktion liegt...
-	PBYTE origMsgBox = nm.HookFunction(msgBoxA, myMsgBox);
+	auto origMsgBox = nm.HookFunction(msgBoxA, myMsgBox);
 	//... und teilen dies origMessageBox mit
 	origMessageBox = reinterpret_cast<tMessageBox>(origMsgBox);
 

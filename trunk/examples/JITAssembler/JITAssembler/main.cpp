@@ -1,9 +1,9 @@
 #include "../../../NoMagic/NoMagic_Include.h"
 
 #if (DEBUG)
-#pragma comment(lib, "NoMagic_d.lib")
+#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic_d.lib")
 #else
-#pragma comment(lib, "NoMagic.lib")
+#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic.lib")
 #endif
 
 
@@ -19,14 +19,14 @@ int main(int argc, char** argv)
 	{
 		bytes = assembler.Assemble(instructions);
 	}
-	catch(NoMagic::MagicException& e)
+	catch(NoMagic::MagicException const& e)
 	{
 		std::cout << e.GetMessage() << std::cout;
 		std::cin.get();
 		return E_FAIL;
 	}
 
-	std::for_each(bytes.begin(), bytes.end(), [](BYTE byte)
+	std::for_each(std::begin(bytes), std::end(bytes), [](BYTE byte)
 	{
 		std::cout << std::hex << static_cast<unsigned int>(byte) << " ";
 	});

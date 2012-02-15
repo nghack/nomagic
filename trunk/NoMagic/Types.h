@@ -34,8 +34,8 @@ namespace NoMagic
 		int error;
 	public:
 		MagicException(std::string message, int errorCode = 0) : msg(message), error(errorCode) {}
-		std::string& GetMessage() { return msg; }
-		int GetError() { return error; }
+		std::string const& GetMessage() const { return msg; }
+		int GetError() const { return error; }
 	};
 
 	///We do not handle Exceptions of any kind with this call
@@ -50,7 +50,7 @@ namespace NoMagic
 	{
 	public:
 		byteString(const char* str) : std::basic_string<BYTE>(str, str+strlen(str)+1) {}
-		byteString(std::string& str) : std::basic_string<BYTE>(str.begin(), str.end()) {}
+		byteString(std::string const& str) : std::basic_string<BYTE>(str.begin(), str.end()) {}
 		byteString(const BYTE* str) : std::basic_string<BYTE>(str) {}
 	};
 

@@ -60,7 +60,7 @@ namespace NoMagic
 			Assembler();
 			~Assembler();
 
-			std::vector<BYTE> Assemble(std::string& instructions) const;
+			std::vector<BYTE> Assemble(const std::string& instructions) const;
 
 			DWORD GetVersion() const;
 		};

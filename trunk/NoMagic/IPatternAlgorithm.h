@@ -37,7 +37,7 @@ namespace NoMagic
 			\param end Pointer zum letzten Byte
 			\return Adresse, an der das Pattern gefunden wurde oder NULL, wenn nichts gefunden wurde.
 			*/
-			virtual UINT_PTR Utilize(byteString pattern, std::vector<bool>& mask, BYTE* begin, BYTE* end) = 0;
+			virtual UINT_PTR Utilize(byteString pattern, std::vector<bool> const& mask, BYTE* begin, BYTE* end) = 0;
 		};
 	}
 }
