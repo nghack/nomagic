@@ -28,7 +28,10 @@ namespace NoMagic
 			m_size(0),
 			m_name(),
 			m_path(),
-			m_baseAddress()
+			m_baseAddress(),
+			m_dosHeader(nullptr),
+			m_ntHeaders(nullptr),
+			m_sections(nullptr)
 		{
 		}
 
@@ -37,7 +40,10 @@ namespace NoMagic
 			m_size(moduleEntry.modBaseSize),
 			m_name(moduleEntry.szModule),
 			m_path(moduleEntry.szExePath),
-			m_baseAddress(reinterpret_cast<UINT_PTR>(moduleEntry.modBaseAddr))
+			m_baseAddress(reinterpret_cast<UINT_PTR>(moduleEntry.modBaseAddr)),
+			m_dosHeader(nullptr),
+			m_ntHeaders(nullptr),
+			m_sections(nullptr)
 		{
 		}
 
@@ -46,7 +52,10 @@ namespace NoMagic
 			m_size(0),
 			m_name(),
 			m_path(),
-			m_baseAddress()
+			m_baseAddress(),
+			m_dosHeader(nullptr),
+			m_ntHeaders(nullptr),
+			m_sections(nullptr)
 		{
 			MODULEENTRY32 modEntry;
 			modEntry.dwSize = sizeof(MODULEENTRY32);
@@ -111,7 +120,14 @@ namespace NoMagic
 			return Module(process, hmod);
 		}
 
-		UINT_PTR Module::GetProcAddress(tstring const& name)
+		void Module::ReadPEHeader()
+		{
+			m_dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(m_baseAddress);
+			m_ntHeaders =  reinterpret_cast<PIMAGE_NT_HEADERS>(m_baseAddress + m_dosHeader->e_lfanew);
+			m_sections = IMAGE_FIRST_SECTION(m_ntHeaders);
+		}
+
+		UINT_PTR Module::GetProcAddress(tstring const& name) const
 		{
 			auto proc = reinterpret_cast<UINT_PTR>(::GetProcAddress(m_module, name.c_str()));
 			if(proc == 0)
@@ -143,6 +159,38 @@ namespace NoMagic
 		UINT_PTR Module::GetBaseAddress() const
 		{
 			return m_baseAddress;
+		}
+
+		IMAGE_DOS_HEADER Module::GetDOSHeader() const
+		{
+			if(m_dosHeader == nullptr)
+				throw MagicException("dos header == nullptr");
+			return *m_dosHeader;
+		}
+
+		IMAGE_NT_HEADERS Module::GetNTHeaders() const
+		{
+			if(m_ntHeaders == nullptr)
+				throw MagicException("dos header == nullptr");
+			return *m_ntHeaders;
+		}
+		
+		std::vector<IMAGE_SECTION_HEADER> Module::GetSections() const
+		{
+			if(m_sections == nullptr)
+				throw MagicException("dos header == nullptr");
+
+			std::vector<IMAGE_SECTION_HEADER> sections(m_ntHeaders->FileHeader.NumberOfSections);
+
+			for(int i = 0; i < m_ntHeaders->FileHeader.NumberOfSections; ++i)
+				sections[i] = m_sections[i];
+
+			return sections;
+		}
+
+		UINT_PTR Module::GetSectionAddress(IMAGE_SECTION_HEADER const& section) const
+		{
+			return	section.VirtualAddress + m_baseAddress;
 		}
 	}
 }

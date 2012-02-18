@@ -30,6 +30,10 @@ namespace NoMagic
 			tstring m_name;
 			tstring m_path;
 			UINT_PTR m_baseAddress;
+
+			IMAGE_DOS_HEADER* m_dosHeader;
+			IMAGE_NT_HEADERS* m_ntHeaders;
+			IMAGE_SECTION_HEADER* m_sections;
 		public:
 			Module();
 			Module(MODULEENTRY32 const& moduleEntry);
@@ -40,13 +44,28 @@ namespace NoMagic
 
 			static Module FromLibrary(Process const& process, tstring const& libPath);
 
-			UINT_PTR GetProcAddress(tstring const& name);
+			UINT_PTR GetProcAddress(tstring const& name) const;
 
 			const HMODULE GetHandle() const;
 			DWORD GetSize() const;
 			tstring const& GetName() const;
 			tstring const& GetPath() const;
 			UINT_PTR GetBaseAddress() const;
+
+			void ReadPEHeader();
+
+			IMAGE_DOS_HEADER GetDOSHeader() const;
+			IMAGE_NT_HEADERS GetNTHeaders() const;
+			std::vector<IMAGE_SECTION_HEADER> GetSections() const;
+
+			UINT_PTR GetSectionAddress(IMAGE_SECTION_HEADER const& section) const;
+
+			template<typename T>
+			T IterateSections(T function) const
+			{
+				auto sections = GetSections();
+				return std::for_each(std::begin(sections), std::end(sections), function);
+			}
 		};
 	}
 }

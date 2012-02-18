@@ -65,6 +65,9 @@ namespace NoMagic
 			static UINT_PTR FindPattern(UINT_PTR startAddress, UINT_PTR endAddress
 				, byteString const& pattern, std::vector<bool> const& mask, Algorithm::IPatternAlgorithm& algorithm);
 
+			static UINT_PTR QuickSearch(byteString const& pattern, std::vector<bool> const& mask,
+				Algorithm::IPatternAlgorithm& algorithm = Algorithm::BoyerMooreHorspool());
+
 			static PBYTE DetourFunction(const PBYTE targetFunction, const PBYTE newFunction);
 			static BOOL RemoveDetour(const PBYTE origFunction, const PBYTE yourFunction);
 			

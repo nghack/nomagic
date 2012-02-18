@@ -36,6 +36,44 @@ namespace NoMagic
 			auto end = reinterpret_cast<BYTE*>(endAddress);
 			return algorithm.Utilize(pattern, mask, begin, end);
 		}
+
+		UINT_PTR Memory::QuickSearch(byteString const& pattern, std::vector<bool> const& mask, Algorithm::IPatternAlgorithm& algorithm)
+		{
+			try
+			{
+				Process proc = Process::GetCurrentProcess();
+				auto modules = Module::GetModules(proc);
+				for(auto module = std::begin(modules); module != std::end(modules); ++module)
+				{
+					(*module).ReadPEHeader();
+					auto sections = (*module).GetSections();
+					UINT_PTR addr = 0;
+
+					std::for_each(std::begin(sections), std::end(sections), [&](IMAGE_SECTION_HEADER const& section)
+					{
+						if((section.Characteristics & IMAGE_SCN_CNT_CODE) != 0)
+						{
+							auto begin = reinterpret_cast<BYTE*>((*module).GetSectionAddress(section));
+							auto end = begin + section.Misc.VirtualSize;
+							addr = algorithm.Utilize(pattern, mask, begin, end);
+							if(addr != 0)
+							{
+								addr += reinterpret_cast<UINT_PTR>(begin);
+								return;
+							}
+						}
+					});
+
+					return addr;
+				}
+
+				return 0;
+			}
+			catch(...)
+			{
+				throw;
+			}
+		}
 		
 		PBYTE Memory::DetourFunction(const PBYTE targetFunction, const PBYTE newFunction)
 		{
