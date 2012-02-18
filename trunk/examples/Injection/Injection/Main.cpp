@@ -3,7 +3,7 @@
 #if (DEBUG)
 #pragma comment(lib, "..\\..\\..\\Debug\\NoMagic_d.lib")
 #else
-#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic.lib")
+#pragma comment(lib, "..\\..\\..\\Release\\NoMagic.lib")
 #endif
 
 
@@ -29,7 +29,15 @@ int main()
 
 		Process::SetDebugPrivileges();
 		Module module;
-		auto process = Process::GetProcessesByName(_T("HackMe.exe"))[0];
+		auto processes = Process::GetProcessesByName(_T("HackMe.exe"));
+		if(processes.size() <= 0)
+		{
+			std::cout << "Start HackMe.exe first!" << std::endl;
+			std::cin.get();
+			return E_FAIL;
+		}
+
+		auto process = processes[0];
 		process.OpenProcess();
 
 		auto startAddress = Injector::Inject(process, _T("injectMe.dll"), module);

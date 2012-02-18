@@ -2,7 +2,7 @@
 #if (DEBUG)
 #pragma comment(lib, "..\\..\\..\\Debug\\NoMagic_d.lib")
 #else
-#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic.lib")
+#pragma comment(lib, "..\\..\\..\\Release\\NoMagic.lib")
 #endif
 
 
