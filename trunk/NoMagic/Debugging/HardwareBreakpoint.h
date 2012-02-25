@@ -16,20 +16,26 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #pragma once
 
-#pragma comment(lib, "psapi.lib")
-#pragma comment(lib, "detours.lib")
+namespace NoMagic
+{
+	namespace Debugging
+	{
+		class HardwareBreakpoint : public Breakpoint
+		{
+		private:
+			HANDLE m_thread;
+			int m_register;
 
-#include "STD_Include.h"
+			bool CheckBreakpoint(CONTEXT& con, UINT_PTR address);
 
-#include "Dependencies/Types.h"
+		public:
+			HardwareBreakpoint(HANDLE hThread, UINT_PTR address, HardwareBreakpoint_Type_Code type, HardwareBreakpoint_Size size);
 
-#include "Algorithm_Include.h"
-#include "Wrappers_Include.h"
+			void Remove();
 
-#include "Dependencies/detours.h"
-#include "NoMagic.h"
-
-#include "Debugging_Include.h"
+			virtual ~HardwareBreakpoint(void);
+		};
+	}
+}

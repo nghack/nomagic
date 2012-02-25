@@ -19,7 +19,7 @@
 #pragma once
 
 #include "STD_Include.h"
-#include "Types.h"
+#include "Dependencies/Types.h"
 #include "Algorithm_Include.h"
 namespace NoMagic
 {
@@ -33,9 +33,10 @@ namespace NoMagic
 	}
 }
 
-#include "FASM.h"
-#include "Process.h"
-#include "Thread.h"
-#include "Module.h"
-#include "detours.h"
-#include "Memory.h"
+#include "Dependencies/detours.h"
+
+#include "Wrappers/FASM.h"
+#include "Wrappers/Process.h"
+#include "Wrappers/Thread.h"
+#include "Wrappers/Module.h"
+#include "Wrappers/Memory.h"

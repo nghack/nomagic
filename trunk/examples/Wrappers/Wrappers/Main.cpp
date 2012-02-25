@@ -1,4 +1,6 @@
 #include "../../../NoMagic/Wrappers_Include.h"
+
+
 #if (DEBUG)
 #pragma comment(lib, "..\\..\\..\\Debug\\NoMagic_d.lib")
 #else
@@ -35,7 +37,7 @@ int main()
 
 			std::cout << "---------------------------------------------" << std::endl;
 		});	
-
+ 
 	} _endusing
 
 	std::cin.get();

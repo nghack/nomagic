@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "Wrappers_Include.h"
+#include "../Wrappers_Include.h"
 
 
 namespace NoMagic
@@ -141,6 +141,32 @@ namespace NoMagic
 		HANDLE Thread::GetHandle()
 		{
 			return this->m_handle;
+		}		
+
+		void Thread::Redirect(UINT_PTR addr)
+		{
+			CONTEXT con = {CONTEXT_CONTROL};
+			SuspendThread(m_handle);
+			GetThreadContext(m_handle, &con);
+
+			con.Eip = addr;
+			con.ContextFlags = CONTEXT_CONTROL;
+
+			SetThreadContext(m_handle, &con);
+			ResumeThread(m_handle);
+		}
+
+		void Thread::Redirect(HANDLE thread, UINT_PTR addr)
+		{
+			CONTEXT con = {CONTEXT_CONTROL};
+			SuspendThread(thread);
+			GetThreadContext(thread, &con);
+
+			con.Eip = addr;
+			con.ContextFlags = CONTEXT_CONTROL;
+
+			SetThreadContext(thread, &con);
+			ResumeThread(thread);
 		}
 	}
 }

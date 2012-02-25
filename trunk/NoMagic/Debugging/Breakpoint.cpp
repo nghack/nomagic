@@ -16,20 +16,21 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../Debugging_Include.h"
 
-#pragma once
 
-#pragma comment(lib, "psapi.lib")
-#pragma comment(lib, "detours.lib")
+namespace NoMagic
+{
+	namespace Debugging
+	{
+		Breakpoint::Breakpoint(UINT_PTR address) : m_address(address)
+		{
+		}
 
-#include "STD_Include.h"
 
-#include "Dependencies/Types.h"
+		Breakpoint::~Breakpoint(void)
+		{
+		}
 
-#include "Algorithm_Include.h"
-#include "Wrappers_Include.h"
-
-#include "Dependencies/detours.h"
-#include "NoMagic.h"
-
-#include "Debugging_Include.h"
+	}
+}
