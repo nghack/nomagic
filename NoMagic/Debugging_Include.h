@@ -16,20 +16,41 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #pragma once
 
-#pragma comment(lib, "psapi.lib")
-#pragma comment(lib, "detours.lib")
-
 #include "STD_Include.h"
-
 #include "Dependencies/Types.h"
-
 #include "Algorithm_Include.h"
-#include "Wrappers_Include.h"
 
-#include "Dependencies/detours.h"
-#include "NoMagic.h"
+namespace NoMagic
+{
+	namespace Debugging
+	{
+		typedef PVECTORED_EXCEPTION_HANDLER exceptionCallback;
 
-#include "Debugging_Include.h"
+		enum HardwareBreakpoint_Type_Code
+		{
+			hType_code = 0,
+			hType_write = 1,
+			hType_readwrite = 3,
+		};
+
+		enum HardwareBreakpoint_Size
+		{
+			hSize_1 = 0,
+			hSize_2 = 1,
+			hSize_4 = 3,
+			hSize_8 = 2,
+		};
+
+		class MemoryBreakpoint;
+		class HardwareBreakpoint;
+		class Breakpoint;
+		class ExceptionHandler;
+	}
+}
+
+#include "Debugging/ExceptionHandler.h"
+#include "Debugging/Breakpoint.h"
+#include "Debugging/HardwareBreakpoint.h"
+#include "Debugging/MemoryBreakpoint.h"

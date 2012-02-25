@@ -97,37 +97,37 @@ namespace NoMagic
 
 			static std::string ReadString(const Process& process, UINT_PTR address, UINT_PTR baseAddress);
 			static std::string ReadString(const Process& process, UINT_PTR address);
-			
+
 			template <typename type>
-			static type Read(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress)
+			static type Read(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, SIZE_T size = sizeof(type))
 			{
 				type buffer;
 				UINT_PTR addr = address+baseAddress;
-				W32_CALL(ReadProcessMemory(process, reinterpret_cast<LPCVOID>(addr), &buffer, sizeof(buffer), nullptr));
+				W32_CALL(ReadProcessMemory(process, reinterpret_cast<LPCVOID>(addr), &buffer, size, nullptr));
 
 				return buffer;
 			}
 			
 			template <typename type>
-			static type Read(const HANDLE process, UINT_PTR address)
+			static type Read(const HANDLE process, UINT_PTR address, SIZE_T size = sizeof(type))
 			{
-				MAGIC_CALL( return Read<type>(process, address, 0) );
+				MAGIC_CALL( return Read<type>(process, address, 0, size) );
 			}
 			
 			template <typename type>
-			static type Read(const Process& process, UINT_PTR address, UINT_PTR baseAddress)
+			static type Read(const Process& process, UINT_PTR address, UINT_PTR baseAddress, SIZE_T size = sizeof(type))
 			{
 				type buffer;
 				UINT_PTR addr = address+baseAddress;
-				W32_CALL(ReadProcessMemory(process.GetHandle(), reinterpret_cast<LPCVOID>(addr), &buffer, sizeof(buffer), nullptr));
+				W32_CALL(ReadProcessMemory(process.GetHandle(), reinterpret_cast<LPCVOID>(addr), &buffer, size, nullptr));
 
 				return buffer;
 			}
 			
 			template <typename type>
-			static type Read(const Process& process, UINT_PTR address)
+			static type Read(const Process& process, UINT_PTR address, SIZE_T size = sizeof(type))
 			{
-				MAGIC_CALL( return Read<type>(process, address, 0) );
+				MAGIC_CALL( return Read<type>(process, address, 0, size) );
 			}
 			#pragma endregion
 
@@ -140,35 +140,35 @@ namespace NoMagic
 
 			
 			template <typename type>
-			static SIZE_T Write(const HANDLE process, UINT_PTR address, type const value, UINT_PTR baseAddress)
+			static SIZE_T Write(const HANDLE process, UINT_PTR address, type const value, UINT_PTR baseAddress, SIZE_T size = sizeof(type))
 			{
 				SIZE_T numWritten = 0;
 				UINT_PTR addr = address+baseAddress;
-				W32_CALL(WriteProcessMemory(process, reinterpret_cast<LPVOID>(addr), &value, sizeof(value), &numWritten));
+				W32_CALL(WriteProcessMemory(process, reinterpret_cast<LPVOID>(addr), &value, size, &numWritten));
 
 				return numWritten;
 			}
 
 			template <typename type>
-			static SIZE_T Write(const Process& process, UINT_PTR address, type const value, UINT_PTR baseAddress)
+			static SIZE_T Write(const Process& process, UINT_PTR address, type const value, UINT_PTR baseAddress, SIZE_T size = sizeof(type))
 			{
 				SIZE_T numWritten = 0;
 				UINT_PTR addr = address+baseAddress;
-				W32_CALL(WriteProcessMemory(process.GetHandle(), reinterpret_cast<LPVOID>(addr), &value, sizeof(value), &numWritten));
+				W32_CALL(WriteProcessMemory(process.GetHandle(), reinterpret_cast<LPVOID>(addr), &value, size, &numWritten));
 
 				return numWritten;
 			}
 
 			template <typename type>
-			static SIZE_T Write(const HANDLE process, UINT_PTR address, type const value)
+			static SIZE_T Write(const HANDLE process, UINT_PTR address, type const value, SIZE_T size = sizeof(type))
 			{
-				MAGIC_CALL( return Write(process, address, value, 0) );
+				MAGIC_CALL( return Write(process, address, value, 0, size) );
 			}
 
 			template <typename type>
-			static SIZE_T Write(const Process& process, UINT_PTR address, type const value)
+			static SIZE_T Write(const Process& process, UINT_PTR address, type const value, SIZE_T size = sizeof(type))
 			{
-				MAGIC_CALL( return Write(process, address, value, 0) );
+				MAGIC_CALL( return Write(process, address, value, 0, size) );
 			}
 			#pragma endregion
 		};

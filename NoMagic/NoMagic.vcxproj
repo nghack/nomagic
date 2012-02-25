@@ -132,32 +132,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithm\BoyerMooreHorspool.h" />
     <ClInclude Include="Algorithm_Include.h" />
-    <ClInclude Include="BoyerMooreHorspool.h" />
-    <ClInclude Include="detours.h" />
-    <ClInclude Include="FASM.h" />
-    <ClInclude Include="IAlgorithm.h" />
+    <ClInclude Include="Debugging\Breakpoint.h" />
+    <ClInclude Include="Debugging\ExceptionHandler.h" />
+    <ClInclude Include="Debugging\HardwareBreakpoint.h" />
+    <ClInclude Include="Debugging\MemoryBreakpoint.h" />
+    <ClInclude Include="Debugging_Include.h" />
+    <ClInclude Include="Dependencies\detours.h" />
+    <ClInclude Include="Dependencies\Interfaces\IAlgorithm.h" />
+    <ClInclude Include="Dependencies\Interfaces\IPatternAlgorithm.h" />
+    <ClInclude Include="Dependencies\Types.h" />
     <ClInclude Include="Injector.h" />
     <ClInclude Include="Injector_Include.h" />
-    <ClInclude Include="IPatternAlgorithm.h" />
-    <ClInclude Include="Memory.h" />
-    <ClInclude Include="Module.h" />
     <ClInclude Include="NoMagic.h" />
     <ClInclude Include="NoMagic_Include.h" />
-    <ClInclude Include="Process.h" />
     <ClInclude Include="STD_Include.h" />
-    <ClInclude Include="Thread.h" />
-    <ClInclude Include="Types.h" />
+    <ClInclude Include="Wrappers\FASM.h" />
+    <ClInclude Include="Wrappers\Memory.h" />
+    <ClInclude Include="Wrappers\Module.h" />
+    <ClInclude Include="Wrappers\Process.h" />
+    <ClInclude Include="Wrappers\Thread.h" />
     <ClInclude Include="Wrappers_Include.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FASM.cpp" />
+    <ClCompile Include="Debugging\Breakpoint.cpp" />
+    <ClCompile Include="Debugging\ExceptionHandler.cpp" />
+    <ClCompile Include="Debugging\HardwareBreakpoint.cpp" />
+    <ClCompile Include="Debugging\MemoryBreakpoint.cpp" />
     <ClCompile Include="Injector.cpp" />
-    <ClCompile Include="Memory.cpp" />
-    <ClCompile Include="Module.cpp" />
     <ClCompile Include="NoMagic.cpp" />
-    <ClCompile Include="Process.cpp" />
-    <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="Wrappers\FASM.cpp" />
+    <ClCompile Include="Wrappers\Memory.cpp" />
+    <ClCompile Include="Wrappers\Module.cpp" />
+    <ClCompile Include="Wrappers\Process.cpp" />
+    <ClCompile Include="Wrappers\Thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

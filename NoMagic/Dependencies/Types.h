@@ -30,11 +30,11 @@ namespace NoMagic
 
 	class MagicException
 	{
-		std::string msg;
+		tstring msg;
 		int error;
 	public:
-		MagicException(std::string message, int errorCode = 0) : msg(message), error(errorCode) {}
-		std::string const& GetMessage() const { return msg; }
+		MagicException(tstring const& message, int errorCode = 0) : msg(message), error(errorCode) {}
+		tstring const& GetMessage() const { return msg; }
 		int GetError() const { return error; }
 	};
 
@@ -72,7 +72,7 @@ namespace NoMagic
 		{
 			std::vector<bool> retVector;
 
-			std::for_each(mask.begin(), mask.end(), [&](char chr)
+			std::for_each(std::begin(mask), std::end(mask), [&](char chr)
 			{
 				if(chr == required)
 					retVector.push_back(true);
@@ -83,4 +83,27 @@ namespace NoMagic
 			return retVector;
 		}
 	};
+
+	
+	template <typename value, typename bit>
+	inline bool test_bit(const value _value, const bit _bit) { return ((_value & _bit) != 0); }
+
+	template <typename value, typename bit>
+	inline bool test_bit(const value _value, const bit _bit, unsigned int num) { return ((_value & (_bit<<num)) != 0); }
+
+
+	
+	template <typename value, typename bit>
+	inline void set_bit(value& _value, const bit _bit) { _value |= _bit; }
+
+	template <typename value, typename bit>
+	inline void set_bit(value& _value, const bit _bit, unsigned int num) { _value |= (_bit<<num); }
+
+	
+
+	template <typename value, typename bit>
+	inline void clear_bit(value& _value, const bit _bit) { _value &= ~_bit; }
+
+	template <typename value, typename bit>
+	inline void clear_bit(value& _value, const bit _bit, unsigned int num) { _value &= ~(_bit<<num); }
 }

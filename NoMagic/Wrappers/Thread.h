@@ -52,6 +52,9 @@ namespace NoMagic
 			void WaitForSingleObject() const;
 			void WaitForSingleObject(DWORD milliseconds) const;
 
+			void Redirect(UINT_PTR addr);
+			static void Redirect(HANDLE thread, UINT_PTR addr);
+
 			HANDLE GetHandle();
 		};
 	}

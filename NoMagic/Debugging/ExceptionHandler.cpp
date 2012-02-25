@@ -16,20 +16,42 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "../Debugging_Include.h"
 
-#pragma once
 
-#pragma comment(lib, "psapi.lib")
-#pragma comment(lib, "detours.lib")
+namespace NoMagic
+{
+	namespace Debugging
+	{
+		ExceptionHandler::ExceptionHandler(exceptionCallback callback) : m_handler(callback)
+			, m_ptr(AddVectoredExceptionHandler(TRUE, callback))
+		{
+		}
 
-#include "STD_Include.h"
+		ExceptionHandler::~ExceptionHandler(void)
+		{
+			if(m_ptr != nullptr)
+				RemoveVectoredExceptionHandler(m_ptr);
+		}
 
-#include "Dependencies/Types.h"
 
-#include "Algorithm_Include.h"
-#include "Wrappers_Include.h"
+		void ExceptionHandler::RemovePanik()
+		{
+			if(m_ptr != nullptr)
+			{
+				RemoveVectoredExceptionHandler(m_ptr);
+				m_ptr = nullptr;
+			}
+		}
+		
+		PVOID ExceptionHandler::AddHandler(exceptionCallback callback)
+		{
+			return AddVectoredExceptionHandler(TRUE, callback);
+		}
 
-#include "Dependencies/detours.h"
-#include "NoMagic.h"
-
-#include "Debugging_Include.h"
+		void ExceptionHandler::RemoveHandler(PVOID handler)
+		{
+			RemoveVectoredExceptionHandler(handler);
+		}
+	}
+}

@@ -28,28 +28,13 @@
     <Filter Include="Headerdateien\Dependencies\Interfaces">
       <UniqueIdentifier>{ece73a48-5ca2-47d3-bc4b-6ff37aa79806}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\Debugging">
+      <UniqueIdentifier>{0139db4f-332b-4f6a-acef-bba247be13b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NoMagic.h">
       <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="BoyerMooreHorspool.h">
-      <Filter>Headerdateien\Algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="IAlgorithm.h">
-      <Filter>Headerdateien\Dependencies\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="IPatternAlgorithm.h">
-      <Filter>Headerdateien\Dependencies\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
-      <Filter>Headerdateien\Dependencies</Filter>
-    </ClInclude>
-    <ClInclude Include="detours.h">
-      <Filter>Headerdateien\Dependencies</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.h">
-      <Filter>Headerdateien\Wrappers</Filter>
     </ClInclude>
     <ClInclude Include="NoMagic_Include.h">
       <Filter>Headerdateien\Includes</Filter>
@@ -60,15 +45,6 @@
     <ClInclude Include="STD_Include.h">
       <Filter>Headerdateien\Includes</Filter>
     </ClInclude>
-    <ClInclude Include="FASM.h">
-      <Filter>Headerdateien\Wrappers</Filter>
-    </ClInclude>
-    <ClInclude Include="Process.h">
-      <Filter>Headerdateien\Wrappers</Filter>
-    </ClInclude>
-    <ClInclude Include="Module.h">
-      <Filter>Headerdateien\Wrappers</Filter>
-    </ClInclude>
     <ClInclude Include="Algorithm_Include.h">
       <Filter>Headerdateien\Includes</Filter>
     </ClInclude>
@@ -78,31 +54,85 @@
     <ClInclude Include="Injector_Include.h">
       <Filter>Headerdateien\Includes</Filter>
     </ClInclude>
-    <ClInclude Include="Thread.h">
+    <ClInclude Include="Wrappers\FASM.h">
       <Filter>Headerdateien\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Wrappers\Memory.h">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Wrappers\Module.h">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Wrappers\Process.h">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Wrappers\Thread.h">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Algorithm\BoyerMooreHorspool.h">
+      <Filter>Headerdateien\Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\detours.h">
+      <Filter>Headerdateien\Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Types.h">
+      <Filter>Headerdateien\Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Interfaces\IAlgorithm.h">
+      <Filter>Headerdateien\Dependencies\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\Interfaces\IPatternAlgorithm.h">
+      <Filter>Headerdateien\Dependencies\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Debugging\Breakpoint.h">
+      <Filter>Headerdateien\Debugging</Filter>
+    </ClInclude>
+    <ClInclude Include="Debugging\ExceptionHandler.h">
+      <Filter>Headerdateien\Debugging</Filter>
+    </ClInclude>
+    <ClInclude Include="Debugging\HardwareBreakpoint.h">
+      <Filter>Headerdateien\Debugging</Filter>
+    </ClInclude>
+    <ClInclude Include="Debugging_Include.h">
+      <Filter>Headerdateien\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Debugging\MemoryBreakpoint.h">
+      <Filter>Headerdateien\Debugging</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NoMagic.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Memory.cpp">
-      <Filter>Headerdateien\Wrappers</Filter>
-    </ClCompile>
-    <ClCompile Include="FASM.cpp">
-      <Filter>Headerdateien\Wrappers</Filter>
-    </ClCompile>
-    <ClCompile Include="Process.cpp">
-      <Filter>Headerdateien\Wrappers</Filter>
-    </ClCompile>
-    <ClCompile Include="Module.cpp">
-      <Filter>Headerdateien\Wrappers</Filter>
-    </ClCompile>
     <ClCompile Include="Injector.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Thread.cpp">
+    <ClCompile Include="Wrappers\FASM.cpp">
       <Filter>Headerdateien\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Wrappers\Memory.cpp">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Wrappers\Module.cpp">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Wrappers\Process.cpp">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Wrappers\Thread.cpp">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Debugging\Breakpoint.cpp">
+      <Filter>Headerdateien\Debugging</Filter>
+    </ClCompile>
+    <ClCompile Include="Debugging\ExceptionHandler.cpp">
+      <Filter>Headerdateien\Debugging</Filter>
+    </ClCompile>
+    <ClCompile Include="Debugging\HardwareBreakpoint.cpp">
+      <Filter>Headerdateien\Debugging</Filter>
+    </ClCompile>
+    <ClCompile Include="Debugging\MemoryBreakpoint.cpp">
+      <Filter>Headerdateien\Debugging</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

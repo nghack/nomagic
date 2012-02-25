@@ -18,7 +18,7 @@
 */
 #pragma once
 
-#include "IAlgorithm.h"
-#include "IPatternAlgorithm.h"
+#include "Dependencies/Interfaces/IAlgorithm.h"
+#include "Dependencies/Interfaces/IPatternAlgorithm.h"
 
-#include "BoyerMooreHorspool.h"
+#include "Algorithm/BoyerMooreHorspool.h"

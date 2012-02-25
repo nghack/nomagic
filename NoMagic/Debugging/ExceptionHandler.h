@@ -16,20 +16,26 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #pragma once
 
-#pragma comment(lib, "psapi.lib")
-#pragma comment(lib, "detours.lib")
+namespace NoMagic
+{
+	namespace Debugging
+	{
+		class ExceptionHandler
+		{
+		private:
+			exceptionCallback m_handler;
+			PVOID m_ptr;
+			
+		public:
+			ExceptionHandler(exceptionCallback callback);
+			~ExceptionHandler(void);
 
-#include "STD_Include.h"
+			void RemovePanik();
 
-#include "Dependencies/Types.h"
-
-#include "Algorithm_Include.h"
-#include "Wrappers_Include.h"
-
-#include "Dependencies/detours.h"
-#include "NoMagic.h"
-
-#include "Debugging_Include.h"
+			static PVOID AddHandler(exceptionCallback callback);
+			static void RemoveHandler(PVOID handler);
+		};
+	}
+}
