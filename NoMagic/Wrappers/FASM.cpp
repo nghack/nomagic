@@ -25,6 +25,9 @@ namespace NoMagic
 	{
 		Assembler::Assembler()
 		{
+			#ifdef _M_AMD64
+			throw MagicException(_T("This features is not supported in x64!"));
+			#endif
 			this->fasmLib = LoadLibrary("FASM.DLL");
 			if(this->fasmLib == nullptr)
 				throw MagicException("Can not load FASM.DLL!", GetLastError());
@@ -33,7 +36,7 @@ namespace NoMagic
 			if(this->fasm_assemble == nullptr)
 				throw MagicException("GetProcAddress(\"fasm_Assemble\") failed!", GetLastError());
 
-			auto getVersion = GetProcAddress(this->fasmLib, _T("fasm_GetVersion"));
+			auto getVersion = reinterpret_cast<int(_stdcall*)()>(GetProcAddress(this->fasmLib, _T("fasm_GetVersion")));
 			if(getVersion == nullptr)
 				throw MagicException("GetProcAddress(\"fasm_Assemble\") failed!", GetLastError());
 
@@ -95,7 +98,7 @@ namespace NoMagic
 			return retVector;
 		}
 
-		DWORD Assembler::GetVersion() const
+		int Assembler::GetVersion() const
 		{
 			return this->version;
 		}

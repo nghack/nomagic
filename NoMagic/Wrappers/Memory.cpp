@@ -77,12 +77,20 @@ namespace NoMagic
 		
 		const PBYTE Memory::DetourFunction(const PBYTE targetFunction, const PBYTE newFunction)
 		{
+			#ifdef _M_AMD64
+			throw MagicException(_T("This features is not supported in x64!"));
+			#else
 			return ::DetourFunction(targetFunction, newFunction);
+			#endif
 		}
 
 		BOOL Memory::RemoveDetour(const PBYTE origFunction, const PBYTE yourFunction)
 		{
+			#ifdef _M_AMD64
+			throw MagicException(_T("This features is not supported in x64!"));
+			#else
 			return ::DetourRemove(origFunction, yourFunction);
+			#endif
 		}
 
 		const PBYTE Memory::DetourIAT(std::string const& functionName, const PBYTE newFunction)
@@ -134,34 +142,34 @@ namespace NoMagic
 		}
 
 #pragma region Allocate
-		UINT_PTR Memory::Allocate(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, 
+		UINT_PTR Memory::Allocate(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, SIZE_T size, 
 				AllocationType allocType, PageProtection protection)
 		{
 			auto addr = address+baseAddress;
 			return reinterpret_cast<UINT_PTR>(VirtualAllocEx(process, reinterpret_cast<LPVOID>(address), size, allocType, protection));
 		}
 
-		UINT_PTR Memory::Allocate(const HANDLE process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection)
+		UINT_PTR Memory::Allocate(const HANDLE process, UINT_PTR address, SIZE_T size, AllocationType allocType, PageProtection protection)
 		{
 			return Allocate(process, address, 0, size, allocType, protection);
 		}
 
-		UINT_PTR Memory::Allocate(const HANDLE process, UINT_PTR address, DWORD size)
+		UINT_PTR Memory::Allocate(const HANDLE process, UINT_PTR address, SIZE_T size)
 		{
 			return Allocate(process, address, 0, size, AllocType_commit, PageProt_execute_readwrite);
 		}
 		
-		UINT_PTR Memory::Allocate(const Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection)
+		UINT_PTR Memory::Allocate(const Process& process, UINT_PTR address, UINT_PTR baseAddress, SIZE_T size, AllocationType allocType, PageProtection protection)
 		{
 			return Allocate(process.GetHandle(), address, baseAddress, size, allocType, protection);
 		}
 
-		UINT_PTR Memory::Allocate(const Process& process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection)
+		UINT_PTR Memory::Allocate(const Process& process, UINT_PTR address, SIZE_T size, AllocationType allocType, PageProtection protection)
 		{
 			return Allocate(process.GetHandle(), address, 0, size, allocType, protection);
 		}
 
-		UINT_PTR Memory::Allocate(const Process& process, UINT_PTR address, DWORD size)
+		UINT_PTR Memory::Allocate(const Process& process, UINT_PTR address, SIZE_T size)
 		{
 			return Allocate(process.GetHandle(), address, 0, size, AllocType_commit, PageProt_execute_readwrite);
 		}
@@ -249,7 +257,7 @@ namespace NoMagic
 
 #pragma region Write
 
-		DWORD Memory::WriteString(const HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
+		SIZE_T Memory::WriteString(const HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
 		{
 			SIZE_T numWritten = 0;
 			auto addr = address+baseAddress;
@@ -257,13 +265,13 @@ namespace NoMagic
 			return numWritten;
 		}
 
-		DWORD Memory::WriteString(const HANDLE process, UINT_PTR address, std::string const& value)
+		SIZE_T Memory::WriteString(const HANDLE process, UINT_PTR address, std::string const& value)
 		{
 			MAGIC_CALL( return WriteString(process, address, value, 0); )
 		}
 
 		
-		DWORD Memory::WriteString(const Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
+		SIZE_T Memory::WriteString(const Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
 		{
 			SIZE_T numWritten = 0;
 			auto addr = address+baseAddress;
@@ -271,7 +279,7 @@ namespace NoMagic
 			return numWritten;
 		}
 
-		DWORD Memory::WriteString(const Process& process, UINT_PTR address, std::string const& value)
+		SIZE_T Memory::WriteString(const Process& process, UINT_PTR address, std::string const& value)
 		{
 			MAGIC_CALL( return WriteString(process, address, value, 0); )
 		}

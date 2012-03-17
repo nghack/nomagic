@@ -46,12 +46,12 @@ namespace NoMagic
 		}
 
 		Process::~Process(void)
-		{
-			/*if(m_handle != nullptr)
+		{ //I've commented this out - why?? Need to be carefull with this one
+			if(m_handle != nullptr)
 			{
 				CloseHandle(m_handle);
 				m_handle = nullptr;
-			}*/
+			}
 		}
 
 		std::vector<Process> Process::GetProcesses()

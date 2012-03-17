@@ -29,6 +29,10 @@ namespace NoMagic
 		class Module;
 		class Thread;
 		class Process;
+	}
+
+	namespace fasm
+	{
 		class Assembler;
 	}
 }

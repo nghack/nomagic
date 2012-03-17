@@ -61,7 +61,7 @@ namespace NoMagic
 			typedef int (__stdcall* tfasm_assemble)(const char* lpSource, void* lpMemory, DWORD size, DWORD nPasses, void* displayPipe);
 			tfasm_assemble fasm_assemble;
 
-			DWORD version;
+			int version;
 			HMODULE fasmLib;
 
 			/**
@@ -90,7 +90,7 @@ namespace NoMagic
 			/**
 			\return fasm.dll's version
 			*/
-			DWORD GetVersion() const;
+			int GetVersion() const;
 		};
 	}
 }

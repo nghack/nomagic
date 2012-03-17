@@ -145,24 +145,34 @@ namespace NoMagic
 
 		void Thread::Redirect(UINT_PTR addr)
 		{
+
+
 			CONTEXT con = {CONTEXT_CONTROL};
 			SuspendThread(m_handle);
-			GetThreadContext(m_handle, &con);
-
+			GetThreadContext(m_handle, &con);		
+#ifdef _M_AMD64
+			con.Rip = addr;
+#else
 			con.Eip = addr;
+#endif
 			con.ContextFlags = CONTEXT_CONTROL;
 
 			SetThreadContext(m_handle, &con);
 			ResumeThread(m_handle);
+
 		}
 
 		void Thread::Redirect(HANDLE thread, UINT_PTR addr)
 		{
+
 			CONTEXT con = {CONTEXT_CONTROL};
 			SuspendThread(thread);
 			GetThreadContext(thread, &con);
-
+#ifdef _M_AMD64
+			con.Rip = addr;
+#else
 			con.Eip = addr;
+#endif
 			con.ContextFlags = CONTEXT_CONTROL;
 
 			SetThreadContext(thread, &con);

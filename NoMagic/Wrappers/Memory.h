@@ -118,7 +118,7 @@ namespace NoMagic
 			\param size how much memory do you want to allocate?
 			\return address to the allocated memory
 			*/
-			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection);
+			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, SIZE_T size, AllocationType allocType, PageProtection protection);
 			
 			/**
 			Allocates memory in the given process
@@ -127,7 +127,7 @@ namespace NoMagic
 			\param size how much memory do you want to allocate?
 			\return address to the allocated memory
 			*/
-			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection);
+			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, SIZE_T size, AllocationType allocType, PageProtection protection);
 			
 			/**
 			Allocates memory in the given process
@@ -137,7 +137,7 @@ namespace NoMagic
 			\return address to the allocated memory
 			\brief uses AllocType_commit and PageProt_execute_readwrite
 			*/
-			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, DWORD size);
+			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, SIZE_T size);
 			
 			/**
 			Allocates memory in the given process
@@ -147,7 +147,7 @@ namespace NoMagic
 			\param size how much memory do you want to allocate?
 			\return address to the allocated memory
 			*/
-			static UINT_PTR Allocate(const Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection);
+			static UINT_PTR Allocate(const Process& process, UINT_PTR address, UINT_PTR baseAddress, SIZE_T size, AllocationType allocType, PageProtection protection);
 			
 			/**
 			Allocates memory in the given process
@@ -156,7 +156,7 @@ namespace NoMagic
 			\param size how much memory do you want to allocate?
 			\return address to the allocated memory
 			*/
-			static UINT_PTR Allocate(const Process& process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection);
+			static UINT_PTR Allocate(const Process& process, UINT_PTR address, SIZE_T size, AllocationType allocType, PageProtection protection);
 			
 			/**
 			Allocates memory in the given process
@@ -166,7 +166,7 @@ namespace NoMagic
 			\return address to the allocated memory
 			\brief uses AllocType_commit and PageProt_execute_readwrite
 			*/
-			static UINT_PTR Allocate(const Process& process, UINT_PTR address, DWORD size);
+			static UINT_PTR Allocate(const Process& process, UINT_PTR address, SIZE_T size);
 			#pragma endregion
 
 			#pragma region FreeMemory
@@ -220,11 +220,11 @@ namespace NoMagic
 			#pragma endregion
 
 			#pragma region WriteMethods
-			static DWORD WriteString(const HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
-			static DWORD WriteString(const HANDLE process, UINT_PTR address, std::string const& value);
+			static SIZE_T WriteString(const HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
+			static SIZE_T WriteString(const HANDLE process, UINT_PTR address, std::string const& value);
 
-			static DWORD WriteString(const Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
-			static DWORD WriteString(const Process& processs, UINT_PTR address, std::string const& value);
+			static SIZE_T WriteString(const Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
+			static SIZE_T WriteString(const Process& processs, UINT_PTR address, std::string const& value);
 
 			
 			template <typename type>
