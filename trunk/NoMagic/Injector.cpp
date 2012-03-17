@@ -28,13 +28,29 @@ namespace NoMagic
 	{
 	}
 
+	static UINT_PTR findLoadedModule(Wrappers::Process const& process, tstring const& dllPath)
+	{
+		auto modules = NoMagic::Wrappers::Module::GetModules(process);
+
+		UINT_PTR addr = 0;
+
+		std::for_each(std::begin(modules), std::end(modules), [&](NoMagic::Wrappers::Module module)
+		{
+			if(module.GetPath() == dllPath ||
+				module.GetName() == dllPath)
+				addr = module.GetBaseAddress();
+		});
+
+		return addr;
+	}
+
 	UINT_PTR Injector::Inject(Wrappers::Process const& process, tstring const& dllPath, Wrappers::Module& outModule)
 	{
 		_using(namespace Wrappers)
 		{
 			UINT_PTR addr;
 			Thread thread;
-			DWORD loadedModule;
+			UINT_PTR loadedModule;
 			Module lib;
 
 			addr = Memory::Allocate(process, 0, dllPath.size() + 1);
@@ -48,8 +64,7 @@ namespace NoMagic
 				thread = Thread::CreateRemoteThread(process, reinterpret_cast<UINT_PTR>(LoadLibrary), reinterpret_cast<LPVOID>(addr));
 				thread.WaitForSingleObject();
 
-				//Todo: ptr to dword... -.- x64??
-				loadedModule = thread.GetExitCode();
+				loadedModule = findLoadedModule(process, dllPath);
 
 				outModule = Module(process, reinterpret_cast<HMODULE>(loadedModule) );
 				

@@ -38,12 +38,12 @@ namespace NoMagic
 			*/
 			UINT_PTR Utilize(byteString pattern, std::vector<bool> const& mask, BYTE* begin, BYTE* end)
 			{
-				int length = pattern.length() - 1;
-				int last = length - 1;
-				int init = length;
-				int* skipTable = new int[256];
+				auto length = pattern.length() - 1;
+				auto last = length - 1;
+				auto init = length;
+				auto skipTable = new size_t[256];
 
-				for(int i = last - 1; i >= 0; --i)
+				for(size_t i = last - 1; i >= 0; --i)
 				{
 					if(mask[i] == false)
 					{
@@ -52,23 +52,23 @@ namespace NoMagic
 					}
 				}
 
-				for(int i = 0; i < 256; ++i)
+				for(size_t i = 0; i < 256; ++i)
 					skipTable[i] = init;
 
-				for(int i = 0; i < last; ++i)
+				for(size_t i = 0; i < last; ++i)
 				{
 					BYTE v = pattern[i];
-					int newSkip = last - i;
-					int oldSkip = skipTable[v];
+					size_t newSkip = last - i;
+					size_t oldSkip = skipTable[v];
 					if(newSkip < oldSkip)
 						skipTable[v] = newSkip;
 				}
 
 				end -= last;
-				int counter = 0;
+				size_t counter = 0;
 				while(begin < end)
 				{
-					for(int i = last; i >= 0; --i)
+					for(size_t i = last; i >= 0; --i)
 					{
 						if(mask[i] && begin[i] != pattern[i])
 							break;
