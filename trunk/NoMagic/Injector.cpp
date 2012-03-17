@@ -54,8 +54,9 @@ namespace NoMagic
 				outModule = Module(process, reinterpret_cast<HMODULE>(loadedModule) );
 				
 				Memory::FreeMemory(process, addr);
+				addr = 0;
 				
-				lib = Module::FromLibrary(process, dllPath);
+				lib = Module::FromLibrary(Process::GetCurrentProcess(), dllPath);
 				UINT_PTR startAddr = lib.GetProcAddress(_T("Start"));
 
 				UINT_PTR diff = static_cast<UINT_PTR>(loadedModule) - reinterpret_cast<UINT_PTR>(lib.GetHandle());
@@ -65,7 +66,8 @@ namespace NoMagic
 			}
 			catch(...)
 			{
-				Memory::FreeMemory(process, addr);
+				if(addr != 0)
+					Memory::FreeMemory(process, addr);
 
 				if(lib.GetHandle() != nullptr)
 					W32_CALL(FreeLibrary(lib.GetHandle()));

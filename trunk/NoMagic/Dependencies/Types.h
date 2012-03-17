@@ -83,27 +83,4 @@ namespace NoMagic
 			return retVector;
 		}
 	};
-
-	
-	template <typename value, typename bit>
-	inline bool test_bit(const value _value, const bit _bit) { return ((_value & _bit) != 0); }
-
-	template <typename value, typename bit>
-	inline bool test_bit(const value _value, const bit _bit, unsigned int num) { return ((_value & (_bit<<num)) != 0); }
-
-
-	
-	template <typename value, typename bit>
-	inline void set_bit(value& _value, const bit _bit) { _value |= _bit; }
-
-	template <typename value, typename bit>
-	inline void set_bit(value& _value, const bit _bit, unsigned int num) { _value |= (_bit<<num); }
-
-	
-
-	template <typename value, typename bit>
-	inline void clear_bit(value& _value, const bit _bit) { _value &= ~_bit; }
-
-	template <typename value, typename bit>
-	inline void clear_bit(value& _value, const bit _bit, unsigned int num) { _value &= ~(_bit<<num); }
 }

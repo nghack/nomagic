@@ -143,6 +143,7 @@
     <ClInclude Include="Dependencies\Interfaces\IAlgorithm.h" />
     <ClInclude Include="Dependencies\Interfaces\IPatternAlgorithm.h" />
     <ClInclude Include="Dependencies\Types.h" />
+    <ClInclude Include="Dependencies\Utilities.h" />
     <ClInclude Include="Injector.h" />
     <ClInclude Include="Injector_Include.h" />
     <ClInclude Include="NoMagic.h" />

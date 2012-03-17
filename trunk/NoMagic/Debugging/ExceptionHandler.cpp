@@ -24,7 +24,7 @@ namespace NoMagic
 	namespace Debugging
 	{
 		ExceptionHandler::ExceptionHandler(exceptionCallback callback) : m_handler(callback)
-			, m_ptr(AddVectoredExceptionHandler(TRUE, callback))
+			, m_ptr(SetUnhandledExceptionFilter(callback))
 		{
 		}
 
@@ -33,25 +33,10 @@ namespace NoMagic
 			if(m_ptr != nullptr)
 				RemoveVectoredExceptionHandler(m_ptr);
 		}
-
-
-		void ExceptionHandler::RemovePanik()
-		{
-			if(m_ptr != nullptr)
-			{
-				RemoveVectoredExceptionHandler(m_ptr);
-				m_ptr = nullptr;
-			}
-		}
 		
-		PVOID ExceptionHandler::AddHandler(exceptionCallback callback)
+		ExceptionHandler ExceptionHandler::AddHandler(exceptionCallback callback)
 		{
-			return AddVectoredExceptionHandler(TRUE, callback);
-		}
-
-		void ExceptionHandler::RemoveHandler(PVOID handler)
-		{
-			RemoveVectoredExceptionHandler(handler);
+			return ExceptionHandler(SetUnhandledExceptionFilter(callback));
 		}
 	}
 }

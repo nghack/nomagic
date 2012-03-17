@@ -28,17 +28,25 @@ int gInt = 5;
 
 void __cdecl secondThread(void*)
 {
-	while(true)
+	try
 	{
-		std::cout << "gInt = " << gInt << std::endl;
-		gInt += 5;
-		Sleep(100);
+		while(true)
+		{
+			std::cout << "gInt = " << gInt << std::endl;
+			gInt += 5;
+			Sleep(100);
+		}
+	}
+	catch(...)
+	{
+		std::cout << "failed" << std::endl;
 	}
 }
 
 LONG __stdcall Handle(EXCEPTION_POINTERS* ep)
 {
 	std::cout << "Exception!" << std::endl;
+
 	return EXCEPTION_CONTINUE_EXECUTION;
 }
 
@@ -69,12 +77,20 @@ void testBreakpoints()
 	HANDLE thread = reinterpret_cast<HANDLE>(_beginthread(&secondThread, 0, nullptr));
 	UINT_PTR addr = reinterpret_cast<UINT_PTR>(&gInt);
 
+	SetLastError(0);
+	try
+	{
 	if(n == 1)
 		HardwareBreakpoint breakpoint(thread, addr, hType_write, hSize_4);
 	else if(n == 2)
 		MemoryBreakpoint breakpoint(addr);
 	else
 		std::cout << "Idiot..." << std::endl;
+	}
+	catch(NoMagic::MagicException const& e)
+	{
+		std::cout << e.GetMessage() << std::endl;
+	}
 
 	std::cin.get();
 	TerminateThread(thread, 0);
@@ -86,6 +102,8 @@ int main()
 	ExceptionHandler hndler(Handle);
 
 	std::cout << "Test breakpoints (1) or thread redirection (2)? ";
+
+	NoMagic::Wrappers::Process::SetDebugPrivileges();
 
 	std::string line;
 	std::getline(std::cin, line);

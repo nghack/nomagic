@@ -60,24 +60,112 @@ namespace NoMagic
 		class Memory
 		{
 		public:
+			/**
+			Changes the protection of the specified region
+			\param address the regions address
+			\param numBytes how many bytes do you want to protect?
+			\param newProtect the regions new protection
+			\return old region protection
+			*/
 			static DWORD Protect(UINT_PTR address, DWORD numBytes, DWORD newProtect);
 
+			/**
+			Searches for the given pattern and returns its address.
+			\param startAddress the first address from which we're going to search
+			\param endAddress the last address?
+			\param pattern the pattern which address we're looking for
+			\param mask wildcards
+			\param algorithm prefered search algorithm (Default: BoyerMooreHorspool)
+			\return the address of the first matching pattern. If nothing is found zero.
+			*/
 			static UINT_PTR FindPattern(UINT_PTR startAddress, UINT_PTR endAddress
-				, byteString const& pattern, std::vector<bool> const& mask, Algorithm::IPatternAlgorithm& algorithm);
+				, byteString const& pattern, std::vector<bool> const& mask, Algorithm::IPatternAlgorithm& algorithm = Algorithm::BoyerMooreHorspool());
 
+			/**
+			Searches for the given pattern only in sections which contain code and returns its address.
+			\param pattern the pattern which address we're looking for
+			\param mask wildcards
+			\param algorithm prefered search algorithm (Default: BoyerMooreHorspool)
+			*/
 			static UINT_PTR QuickSearch(byteString const& pattern, std::vector<bool> const& mask,
 				Algorithm::IPatternAlgorithm& algorithm = Algorithm::BoyerMooreHorspool());
 
-			static PBYTE DetourFunction(const PBYTE targetFunction, const PBYTE newFunction);
+			/**
+			Hooks a function
+			\param targetFunction the function we want to hook
+			\param newFunction the function which will be called instead of the original function
+			\return new address of the old function
+			*/
+			static const PBYTE DetourFunction(const PBYTE targetFunction, const PBYTE newFunction);
+
+			/**
+			Removes a hook
+			\param origFunction the original function returned by DetourFunction
+			\param your hooked function
+			*/
 			static BOOL RemoveDetour(const PBYTE origFunction, const PBYTE yourFunction);
+
+			/**
+			*/
+			static const PBYTE DetourIAT(std::string const& functionName, const PBYTE newFunction);
 			
 			#pragma region Allocate
+			/**
+			Allocates memory in the given process
+			\param process the process in which we're going to allocate memory
+			\param address where are we going to allocate memory? (set to 0 to let the os choose a location)
+			\param baseAddress start address of the module. will be added to address
+			\param size how much memory do you want to allocate?
+			\return address to the allocated memory
+			*/
 			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection);
+			
+			/**
+			Allocates memory in the given process
+			\param process the process in which we're going to allocate memory
+			\param address where are we going to allocate memory? (set to 0 to let the os choose a location)
+			\param size how much memory do you want to allocate?
+			\return address to the allocated memory
+			*/
 			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection);
+			
+			/**
+			Allocates memory in the given process
+			\param process the process in which we're going to allocate memory
+			\param address where are we going to allocate memory? (set to 0 to let the os choose a location)
+			\param size how much memory do you want to allocate?
+			\return address to the allocated memory
+			\brief uses AllocType_commit and PageProt_execute_readwrite
+			*/
 			static UINT_PTR Allocate(const HANDLE process, UINT_PTR address, DWORD size);
-
+			
+			/**
+			Allocates memory in the given process
+			\param process the process in which we're going to allocate memory
+			\param address where are we going to allocate memory? (set to 0 to let the os choose a location)
+			\param baseAddress start address of the module. will be added to address
+			\param size how much memory do you want to allocate?
+			\return address to the allocated memory
+			*/
 			static UINT_PTR Allocate(const Process& process, UINT_PTR address, UINT_PTR baseAddress, DWORD size, AllocationType allocType, PageProtection protection);
+			
+			/**
+			Allocates memory in the given process
+			\param process the process in which we're going to allocate memory
+			\param address where are we going to allocate memory? (set to 0 to let the os choose a location)
+			\param size how much memory do you want to allocate?
+			\return address to the allocated memory
+			*/
 			static UINT_PTR Allocate(const Process& process, UINT_PTR address, DWORD size, AllocationType allocType, PageProtection protection);
+			
+			/**
+			Allocates memory in the given process
+			\param process the process in which we're going to allocate memory
+			\param address where are we going to allocate memory? (set to 0 to let the os choose a location)
+			\param size how much memory do you want to allocate?
+			\return address to the allocated memory
+			\brief uses AllocType_commit and PageProt_execute_readwrite
+			*/
 			static UINT_PTR Allocate(const Process& process, UINT_PTR address, DWORD size);
 			#pragma endregion
 
