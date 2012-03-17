@@ -99,6 +99,9 @@
     <ClInclude Include="Debugging\MemoryBreakpoint.h">
       <Filter>Headerdateien\Debugging</Filter>
     </ClInclude>
+    <ClInclude Include="Dependencies\Utilities.h">
+      <Filter>Headerdateien\Dependencies</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NoMagic.cpp">

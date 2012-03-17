@@ -16,42 +16,9 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#pragma once
+#include <iostream>
 
-#include "STD_Include.h"
-#include "Dependencies/Types.h"
-#include "Dependencies/Utilities.h"
-#include "Algorithm_Include.h"
-
-namespace NoMagic
+__declspec(dllexport) void print(int n)
 {
-	namespace Debugging
-	{
-		typedef PVECTORED_EXCEPTION_HANDLER exceptionCallback;
-
-		enum HardwareBreakpoint_Type_Code
-		{
-			hType_code = 0,
-			hType_write = 1,
-			hType_readwrite = 3,
-		};
-
-		enum HardwareBreakpoint_Size
-		{
-			hSize_1 = 0,
-			hSize_2 = 1,
-			hSize_4 = 3,
-			hSize_8 = 2,
-		};
-
-		class MemoryBreakpoint;
-		class HardwareBreakpoint;
-		class Breakpoint;
-		class ExceptionHandler;
-	}
+	std::cout << "\"n\" equals " << n << std::endl;
 }
-
-#include "Debugging/ExceptionHandler.h"
-#include "Debugging/Breakpoint.h"
-#include "Debugging/HardwareBreakpoint.h"
-#include "Debugging/MemoryBreakpoint.h"

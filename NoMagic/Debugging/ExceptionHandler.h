@@ -26,16 +26,13 @@ namespace NoMagic
 		{
 		private:
 			exceptionCallback m_handler;
-			PVOID m_ptr;
+			LPTOP_LEVEL_EXCEPTION_FILTER m_ptr;
 			
 		public:
 			ExceptionHandler(exceptionCallback callback);
 			~ExceptionHandler(void);
 
-			void RemovePanik();
-
-			static PVOID AddHandler(exceptionCallback callback);
-			static void RemoveHandler(PVOID handler);
+			static ExceptionHandler AddHandler(exceptionCallback callback);
 		};
 	}
 }

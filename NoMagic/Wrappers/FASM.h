@@ -23,6 +23,9 @@ namespace NoMagic
 {
 	namespace fasm
 	{
+		/**
+		FASM internal stuff
+		*/
 		struct FASM_STATE
 		{
 			DWORD condition;
@@ -39,7 +42,10 @@ namespace NoMagic
 				const char* error_line;
 			};
 		};
-
+		
+		/**
+		FASM internal stuff
+		*/
 		struct fasm_read_buffer
 		{
 			FASM_STATE state;
@@ -49,19 +55,41 @@ namespace NoMagic
 		class Assembler
 		{
 		private:
+			/**
+			FASM internal stuff
+			*/
 			typedef int (__stdcall* tfasm_assemble)(const char* lpSource, void* lpMemory, DWORD size, DWORD nPasses, void* displayPipe);
 			tfasm_assemble fasm_assemble;
 
 			DWORD version;
 			HMODULE fasmLib;
 
+			/**
+			Assembles the given string
+			\param source The Assembly command
+			\param outLen Number of returned characters
+			\return sequence of assembled bytes
+			\brief the returned string must be deleted!
+			*/
 			char* toAsm(const char* source, int& outLen) const;
 		public:
+			/**
+			Loads fasm_assemble from fasm.dll
+			\brief throws an exception if it fails!
+			*/
 			Assembler();
 			~Assembler();
 
+			/**
+			Assembles semicolon seperated assembly commands
+			\param instructions semicolon seperated assembly commands
+			\return vector of assembled bytes
+			*/
 			std::vector<BYTE> Assemble(const std::string& instructions) const;
 
+			/**
+			\return fasm.dll's version
+			*/
 			DWORD GetVersion() const;
 		};
 	}

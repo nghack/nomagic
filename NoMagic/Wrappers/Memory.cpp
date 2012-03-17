@@ -75,7 +75,7 @@ namespace NoMagic
 			}
 		}
 		
-		PBYTE Memory::DetourFunction(const PBYTE targetFunction, const PBYTE newFunction)
+		const PBYTE Memory::DetourFunction(const PBYTE targetFunction, const PBYTE newFunction)
 		{
 			return ::DetourFunction(targetFunction, newFunction);
 		}
@@ -83,6 +83,54 @@ namespace NoMagic
 		BOOL Memory::RemoveDetour(const PBYTE origFunction, const PBYTE yourFunction)
 		{
 			return ::DetourRemove(origFunction, yourFunction);
+		}
+
+		const PBYTE Memory::DetourIAT(std::string const& functionName, const PBYTE newFunction)
+		{
+			auto process = NoMagic::Wrappers::Process::GetCurrentProcess();
+			auto module = NoMagic::Wrappers::Module::GetModules(process)[0];
+			module.ReadPEHeader();
+			auto ntHeaders = module.GetNTHeaders();
+
+			auto baseAddress = module.GetBaseAddress();
+	
+			auto dataDir = ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+			auto importTable = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(dataDir.VirtualAddress + baseAddress);
+		
+			for(; importTable->Characteristics != 0; ++importTable)
+			{
+				if(importTable->FirstThunk == 0 || importTable->OriginalFirstThunk == 0) //This would be pretty weird! should it throw an exception?
+					continue;
+
+				PIMAGE_THUNK_DATA thunk = (PIMAGE_THUNK_DATA)(importTable->FirstThunk + baseAddress);
+				PIMAGE_THUNK_DATA origThunk = (PIMAGE_THUNK_DATA)(importTable->OriginalFirstThunk + baseAddress);
+
+				for(; origThunk->u1.Function != 0; ++origThunk, ++thunk)
+				{
+					if(origThunk->u1.Ordinal & IMAGE_ORDINAL_FLAG)
+						continue;
+
+					auto import = (PIMAGE_IMPORT_BY_NAME)(origThunk->u1.AddressOfData + baseAddress);
+
+					if(strcmp(functionName.c_str(), (char*)import->Name))
+						continue;
+
+					MEMORY_BASIC_INFORMATION thunkMemInfo;
+					VirtualQuery(thunk, &thunkMemInfo, sizeof(thunkMemInfo));
+
+					W32_CALL( VirtualProtect(thunkMemInfo.BaseAddress, thunkMemInfo.RegionSize, PAGE_EXECUTE_READWRITE, &thunkMemInfo.Protect) );
+
+					UINT_PTR oldFunction = thunk->u1.Function;
+					thunk->u1.Function = (UINT_PTR)newFunction;
+				
+					DWORD junk = 0;
+					W32_CALL( VirtualProtect(thunkMemInfo.BaseAddress, thunkMemInfo.RegionSize, thunkMemInfo.Protect, &junk) );
+						
+					return (PBYTE)oldFunction;
+				}
+			}
+
+			return nullptr; //throw?
 		}
 
 #pragma region Allocate
