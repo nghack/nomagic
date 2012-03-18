@@ -145,8 +145,6 @@ namespace NoMagic
 
 		void Thread::Redirect(UINT_PTR addr)
 		{
-
-
 			CONTEXT con = {CONTEXT_CONTROL};
 			SuspendThread(m_handle);
 			GetThreadContext(m_handle, &con);		
@@ -164,7 +162,6 @@ namespace NoMagic
 
 		void Thread::Redirect(HANDLE thread, UINT_PTR addr)
 		{
-
 			CONTEXT con = {CONTEXT_CONTROL};
 			SuspendThread(thread);
 			GetThreadContext(thread, &con);
