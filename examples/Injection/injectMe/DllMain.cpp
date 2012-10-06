@@ -2,7 +2,7 @@
 #include "../../../NoMagic/Wrappers_Include.h"
 
 #if (DEBUG)
-	#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic_d.lib")
+	#pragma comment(lib, "..\\..\\..\\x64\\Debug\\NoMagic_d.lib")
 	NoMagic::byteString bString = "\xC6\x05\x01\x01\x01\x01\x01\xC7\x05\x01\x01\x01\x01\x01\x01\x01\x01\xC7\x45\xF8\x01\x01\x01\x01";
 	std::vector<bool> patternMask = NoMagic::PatternMask::Make("xx????xxx????????xxx????", 'x');
 
@@ -10,7 +10,7 @@
 	int keepRunningOffset = 2;
 
 #else
-	#pragma comment(lib, "..\\..\\..\\Release\\NoMagic.lib")
+	#pragma comment(lib, "..\\..\\..\\bin\\NoMagic_Win32_Release.lib")
 	NoMagic::byteString bString = "\x68\x01\x01\x01\x01\xC6\x05\x01\x01\x01\x01\x01";
 	std::vector<bool> patternMask = NoMagic::PatternMask::Make("x????xx????x", 'x');
 

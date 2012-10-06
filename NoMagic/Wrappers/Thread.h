@@ -24,11 +24,13 @@ namespace NoMagic
 	{
 		class Thread
 		{
+			Thread(const Thread& right);
 		private:
 			DWORD m_threadId;
-			HANDLE m_handle;
+			Handle m_handle;
 		public:
 			Thread();
+			Thread(Thread&& right);
 			Thread(DWORD threadId);
 			Thread(DWORD accesRights, DWORD threadId);
 			Thread(HANDLE thread);
@@ -55,7 +57,8 @@ namespace NoMagic
 			void Redirect(UINT_PTR addr);
 			static void Redirect(HANDLE thread, UINT_PTR addr);
 
-			HANDLE GetHandle();
+			const Handle& GetHandle() const;
+			const DWORD GetId() const;
 		};
 	}
 }

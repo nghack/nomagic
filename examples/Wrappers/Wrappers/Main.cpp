@@ -7,6 +7,7 @@
 #pragma comment(lib, "..\\..\\..\\Release\\NoMagic.lib")
 #endif
 
+
 int main()
 {
 	_using(namespace NoMagic::Wrappers)
@@ -17,6 +18,7 @@ int main()
 
 		std::for_each(std::begin(myModules), std::end(myModules), [](Module& module)
 		{
+			
 			module.ReadPEHeader();
 			std::cout	<< "Module:\n"
 						<< "\tName:\t\t" << module.GetName() << "\n"
@@ -29,10 +31,11 @@ int main()
 			auto sections = module.GetSections();
 			module.IterateSections([&](IMAGE_SECTION_HEADER const& section)
 			{
+				const char* yesNo[2] = { "no", "yes" };
 				bool hasCode = (section.Characteristics & IMAGE_SCN_CNT_CODE) != 0;
 				std::cout << "\t\t\t0x" << std::hex << module.GetSectionAddress(section) << std::dec;
 				std::cout << ": " << section.Name;
-				std::cout << "  contains code: " << hasCode << "\n";
+				std::cout << "  contains code: " << yesNo[hasCode] << "\n";
 			});
 
 			std::cout << "---------------------------------------------" << std::endl;

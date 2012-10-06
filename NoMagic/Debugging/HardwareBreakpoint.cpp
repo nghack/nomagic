@@ -33,9 +33,9 @@ namespace NoMagic
 
 			if(CheckBreakpoint(con, address))
 			{
-				set_bit(con.Dr7, type, 16 + m_register*4);
-				set_bit(con.Dr7, size, 18 + m_register*4);
-				set_bit(con.Dr7, 1,  m_register*2);
+				set_bit(con.Dr7, type, 16 + m_register * 4);
+				set_bit(con.Dr7, size, 18 + m_register * 4);
+				set_bit(con.Dr7, 1,  m_register * 2);
 
 				con.ContextFlags = CONTEXT_DEBUG_REGISTERS;
 			}

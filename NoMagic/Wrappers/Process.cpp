@@ -22,7 +22,17 @@ namespace NoMagic
 {
 	namespace Wrappers
 	{
-		Process::Process(DWORD processId) : m_id(processId), m_handle(nullptr)
+		Process::Process() :
+			m_id(0),
+			m_handle(nullptr),
+			m_name(_T("Uninitialized"))
+		{
+		}
+
+		Process::Process(DWORD processId) : 
+			m_id(processId), 
+			m_handle(nullptr),
+			m_name(_T("Uninitialized"))
 		{
 			PROCESSENTRY32 pe32;
 			HANDLE hSnapshot = NULL;
@@ -41,17 +51,30 @@ namespace NoMagic
 			CloseHandle(hSnapshot);
 		}
 
-		Process::Process(PROCESSENTRY32 const& processEntry) : m_id(processEntry.th32ProcessID), m_handle(nullptr), m_name(processEntry.szExeFile)
+		Process::Process(PROCESSENTRY32 const& processEntry) : 
+			m_id(processEntry.th32ProcessID), 
+			m_handle(nullptr), 
+			m_name(processEntry.szExeFile)
 		{
 		}
 
+		Process::Process(const Process& right)
+		{
+			throw MagicException(_T("One does not simply copy a process!"));
+		}
+
+		Process::Process(Process&& right) :
+			m_id(0),
+			m_handle(nullptr),
+			m_name(_T(""))
+		{
+			std::swap(m_id, right.m_id);
+			std::swap(m_handle, right.m_handle);
+			std::swap(m_name, right.m_name);
+		}
+
 		Process::~Process(void)
-		{ //I've commented this out - why?? Need to be carefull with this one
-			if(m_handle != nullptr)
-			{
-				CloseHandle(m_handle);
-				m_handle = nullptr;
-			}
+		{
 		}
 
 		std::vector<Process> Process::GetProcesses()
@@ -104,7 +127,7 @@ namespace NoMagic
 			auto wnd = ::FindWindow(nullptr, windowName.c_str());
 
 			if(wnd == nullptr)
-				throw MagicException("Can not find Window!", GetLastError());
+				throw MagicException(_T("Can not find Window!"), GetLastError());
 
 			return Process::GetProcessByHWND(wnd);
 		}
@@ -130,7 +153,7 @@ namespace NoMagic
 				} while (Process32Next(hSnapshot, &pe32));
 			}
 			CloseHandle(hSnapshot);
-			throw MagicException("Process not found!");
+			throw MagicException(_T("Process not found!"));
 		}
 
 		Process Process::GetProcessByHWND(HWND hwnd)
@@ -147,14 +170,11 @@ namespace NoMagic
 
 		void Process::OpenProcess()
 		{
-			if(this->m_handle != nullptr)
-				CloseHandle(m_handle);
-
 			SetLastError(0);
 			this->m_handle = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->m_id);
 			
 			if(this->m_handle == nullptr || GetLastError() != 0)
-				throw MagicException("OpenProcess failed!", GetLastError());
+				throw MagicException(_T("OpenProcess failed!"), GetLastError());
 		}
 
 		void Process::SetDebugPrivileges()
@@ -170,8 +190,8 @@ namespace NoMagic
 			{
 				tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 				tp.PrivilegeCount = 1;
-				AdjustTokenPrivileges(hToken, FALSE, &tp, 0, nullptr, nullptr);
-				CloseHandle(hToken);
+				W32_CALL(AdjustTokenPrivileges(hToken, FALSE, &tp, 0, nullptr, nullptr));
+				W32_CALL(CloseHandle(hToken));
 			}
 		}
 
@@ -198,8 +218,29 @@ namespace NoMagic
 			return threads;
 		}
 
+		std::vector<Module> Process::GetModules()
+		{
+			std::vector<Module> modules;
+			MODULEENTRY32 modEntry;
+			modEntry.dwSize = sizeof(MODULEENTRY32);
+			
+			auto hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, m_id);
+			W32_CALL( Module32First(hSnap, &modEntry) );
+			do 
+			{
+				if(modEntry.th32ProcessID == m_id)
+				{
+					modules.push_back(Module(modEntry));
+				}
+			} while (Module32Next(hSnap, &modEntry));
+			
+			CloseHandle(hSnap);
+
+			return modules;
+		}
+
 		DWORD Process::GetId() const { return m_id; }
-		const HANDLE Process::GetHandle() const { return m_handle; }
+		const Handle& Process::GetHandle() const { return m_handle; }
 		tstring const& Process::GetName() const { return m_name; }
 	}
 }

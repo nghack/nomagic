@@ -17,6 +17,8 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef UNICODE
+
 #include "../Wrappers_Include.h"
 
 namespace NoMagic
@@ -104,3 +106,5 @@ namespace NoMagic
 		}
 	}
 }
+
+#endif

@@ -1,27 +1,19 @@
 #include "../../../NoMagic/NoMagic_Include.h"
 #include "../../../NoMagic/Injector_Include.h"
 #if (DEBUG)
-#pragma comment(lib, "..\\..\\..\\Debug\\NoMagic_d.lib")
+#pragma comment(lib, "..\\..\\..\\x64\\Debug\\NoMagic_d.lib")
 #else
-#pragma comment(lib, "..\\..\\..\\Release\\NoMagic.lib")
+#pragma comment(lib, "..\\..\\..\\bin\\NoMagic_Win32_Release.lib")
 #endif
 
+void __fastcall foo()
+{
+}
 
 int main()
 {
 	try
-	{
-		//Equivalent code by using the wrapper class NoMagic
-		/*NoMagic::NoMagic noMagic;
-		
-		noMagic.SetDebugPrivileges();
-		noMagic.OpenProcess(_T("HackMe.exe"));
-		UINT_PTR startAddress = noMagic.InjectDll(_T("injectMe.dll"));
-		
-		std::cout << "Press Enter to continue..." << std::endl;
-		std::cin.get();
-		noMagic.UnloadDll(startAddress);*/
-		
+	{		
 		using NoMagic::Wrappers::Process;
 		using NoMagic::Wrappers::Module;
 		using NoMagic::Wrappers::Thread;
@@ -37,7 +29,9 @@ int main()
 			return E_FAIL;
 		}
 
-		auto process = processes[0];
+		auto id = processes[0].GetId();
+
+		auto process = Process::GetProcessById(id);
 		process.OpenProcess();
 
 		auto startAddress = Injector::Inject(process, _T("injectMe.dll"), module);

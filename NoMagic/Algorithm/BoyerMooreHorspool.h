@@ -29,12 +29,12 @@ namespace NoMagic
 			BoyerMooreHorspool() {}
 
 			/**
-			Wendet den Algorithmus an.
-			\param pattern Das Muster, nach dem gesucht werden soll.
-			\param mask Die Maske, um festzulegen welche Bytes übereinstimmen müssen
-			\param begin Pointer zum ersten Byte
-			\param end Pointer zum letzten Byte
-			\return Adresse, an der das Pattern gefunden wurde oder NULL, wenn nichts gefunden wurde.
+			Utilizes the algorithm
+			\param pattern The pattern to search for
+			\param mask A mask of wildcards
+			\param begin The first byte in the sequence of bytes to look for
+			\param end Pointer The last byte in the sequence of bytes to look for
+			\return Address of the position where the sequence has been found or 0
 			*/
 			UINT_PTR Utilize(byteString pattern, std::vector<bool> const& mask, BYTE* begin, BYTE* end)
 			{

@@ -20,6 +20,14 @@
 #pragma once
 
 
+
+/*
+	This class is deprecated and it is just there for backwards compatibility.
+	I do not recommend to use this any longer!
+	Therefore I'm not going to localize its documentation.
+*/
+
+
 namespace NoMagic
 {
 	class NoMagic
@@ -197,7 +205,7 @@ namespace NoMagic
 		\return ausgelesener Wert.
 		\brief Wirft MagicException bei Fehlschlag
 		*/
-		std::string ReadString(UINT_PTR address, bool relative = false) const;
+		tstring ReadString(UINT_PTR address, bool relative = false) const;
 		
 		/**
 		Schreibt sizeof(type) Bytes in den Speicher. 
@@ -220,6 +228,6 @@ namespace NoMagic
 		\param relative Wenn == true dann wird die angegebene Adresse zur Basis hinzugerechnet.
 		\brief Wirft MagicException bei Fehlschlag
 		*/
-		void WriteString(UINT_PTR address, std::string value, bool relative = false) const;
+		void WriteString(UINT_PTR address, tstring value, bool relative = false) const;
 	};
 }

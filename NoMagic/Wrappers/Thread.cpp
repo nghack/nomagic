@@ -23,44 +23,60 @@ namespace NoMagic
 {
 	namespace Wrappers
 	{
-		Thread::Thread()  : m_threadId(0), m_handle(nullptr)
+		Thread::Thread() : 
+			m_threadId(0), 
+			m_handle(nullptr)
 		{
 		}
 
-		Thread::Thread(DWORD threadId) : m_threadId(threadId), m_handle(nullptr)
+		Thread::Thread(const Thread& right)
+		{
+			throw MagicException(_T("One does not simply copy a thread!"));
+		}
+
+		Thread::Thread(Thread&& right) : 
+			m_threadId(0), 
+			m_handle(nullptr)
+		{
+			std::swap(m_handle, right.m_handle);
+			std::swap(m_threadId, right.m_threadId);
+		}
+
+		Thread::Thread(DWORD threadId) : 
+			m_threadId(threadId),
+			m_handle(nullptr)
 		{
 			SetLastError(ERROR_SUCCESS);
 			this->m_handle = ::OpenThread(THREAD_ALL_ACCESS, false, threadId);
 			if(GetLastError() != ERROR_SUCCESS)
-				throw MagicException("OpenThread failed!", GetLastError());
+				throw MagicException(_T("OpenThread failed!"), GetLastError());
 		}
 
-		Thread::Thread(DWORD accesRights, DWORD threadId) : m_threadId(threadId), m_handle(nullptr)
+		Thread::Thread(DWORD accesRights, DWORD threadId) : 
+			m_threadId(threadId), 
+			m_handle(nullptr)
 		{
 			SetLastError(ERROR_SUCCESS);
 			this->m_handle = ::OpenThread(accesRights, false, threadId);
 			if(GetLastError() != ERROR_SUCCESS)
-				throw MagicException("OpenThread failed!", GetLastError());
+				throw MagicException(_T("OpenThread failed!"), GetLastError());
 		}
 
-		Thread::Thread(HANDLE thread) : m_threadId(0), m_handle(thread)
+		Thread::Thread(HANDLE thread) : 
+			m_threadId(0), 
+			m_handle(thread)
 		{
 			this->m_threadId = ::GetThreadId(thread);
 		}
 
-		Thread::Thread(HANDLE thread, DWORD threadId) : m_threadId(threadId), m_handle(thread)
+		Thread::Thread(HANDLE thread, DWORD threadId) : 
+			m_threadId(threadId), 
+			m_handle(thread)
 		{
 		}
 
 		Thread::~Thread(void)
 		{
-			//FixMe: Crash!
-			/*
-			if(m_handle != nullptr)
-			{
-				CloseHandle(m_handle);
-				m_handle = nullptr;
-			}*/
 		}
 
 		DWORD Thread::GetExitCode() const
@@ -97,7 +113,7 @@ namespace NoMagic
 				reinterpret_cast<LPTHREAD_START_ROUTINE>(startAddress), parameter, 0, &threadId);
 
 			if(handle == nullptr)
-				throw MagicException("CreateRemoteThread failed!", GetLastError());
+				throw MagicException(_T("CreateRemoteThread failed!"), GetLastError());
 
 			return Thread(handle, threadId);
 		}
@@ -114,7 +130,7 @@ namespace NoMagic
 				reinterpret_cast<LPTHREAD_START_ROUTINE>(startAddress), parameter, 0, &threadId);
 
 			if(handle == nullptr)
-				throw MagicException("CreateRemoteThread failed!", GetLastError());
+				throw MagicException(_T("CreateRemoteThread failed!"), GetLastError());
 
 			return Thread(handle, threadId);
 		}
@@ -128,20 +144,25 @@ namespace NoMagic
 		{
 			SetLastError(0);
 			if( ::WaitForSingleObject(m_handle, INFINITE) != 0)
-				throw MagicException("WaitForSingleObject failed!", GetLastError());
+				throw MagicException(_T("WaitForSingleObject failed!"), GetLastError());
 		}
 
 		void Thread::WaitForSingleObject(DWORD milliseconds) const
 		{
 			SetLastError(0);
 			if( ::WaitForSingleObject(m_handle, milliseconds) != 0)
-				throw MagicException("WaitForSingleObject failed!", GetLastError());
+				throw MagicException(_T("WaitForSingleObject failed!"), GetLastError());
 		}
 
-		HANDLE Thread::GetHandle()
+		const Handle& Thread::GetHandle() const
 		{
 			return this->m_handle;
-		}		
+		}
+
+		const DWORD Thread::GetId() const
+		{
+			return this->m_threadId;
+		}
 
 		void Thread::Redirect(UINT_PTR addr)
 		{

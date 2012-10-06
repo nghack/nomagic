@@ -83,7 +83,7 @@ namespace NoMagic
 			};
 
 			if(findModule() == false)
-				throw MagicException("Can not find module!");
+				throw MagicException(_T("Can not find module!"));
 		}
 
 		Module::~Module(void)
@@ -115,7 +115,7 @@ namespace NoMagic
 		{
 			auto hmod = LoadLibrary(libPath.c_str());
 			if(hmod == nullptr)
-				throw MagicException("LoadLibrary failed!", GetLastError());
+				throw MagicException(_T("LoadLibrary failed!"), GetLastError());
 
 			return Module(process, hmod);
 		}
@@ -127,11 +127,12 @@ namespace NoMagic
 			m_sections = IMAGE_FIRST_SECTION(m_ntHeaders);
 		}
 
-		UINT_PTR Module::GetProcAddress(tstring const& name) const
+		UINT_PTR Module::GetProcAddress(std::string const& name) const
 		{
+			memcpy(0, 0, 0);
 			auto proc = reinterpret_cast<UINT_PTR>(::GetProcAddress(m_module, name.c_str()));
 			if(proc == 0)
-				throw MagicException("GetProcAddress failed!", GetLastError());
+				throw MagicException(_T("GetProcAddress failed!"), GetLastError());
 
 			return proc;
 		}
@@ -164,21 +165,21 @@ namespace NoMagic
 		IMAGE_DOS_HEADER Module::GetDOSHeader() const
 		{
 			if(m_dosHeader == nullptr)
-				throw MagicException("dos header == nullptr");
+				throw MagicException(_T("dos header == nullptr"));
 			return *m_dosHeader;
 		}
 
 		IMAGE_NT_HEADERS Module::GetNTHeaders() const
 		{
 			if(m_ntHeaders == nullptr)
-				throw MagicException("dos header == nullptr");
+				throw MagicException(_T("dos header == nullptr"));
 			return *m_ntHeaders;
 		}
 		
 		std::vector<IMAGE_SECTION_HEADER> Module::GetSections() const
 		{
 			if(m_sections == nullptr)
-				throw MagicException("dos header == nullptr");
+				throw MagicException(_T("dos header == nullptr"));
 
 			std::vector<IMAGE_SECTION_HEADER> sections(m_ntHeaders->FileHeader.NumberOfSections);
 

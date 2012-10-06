@@ -25,6 +25,7 @@ namespace NoMagic
 {
 	namespace Wrappers
 	{
+		class Symbols;
 		class Memory;
 		class Module;
 		class Thread;
@@ -39,8 +40,11 @@ namespace NoMagic
 
 #include "Dependencies/detours.h"
 
+#include "Wrappers/Handle.h"
+
 #include "Wrappers/FASM.h"
 #include "Wrappers/Process.h"
 #include "Wrappers/Thread.h"
 #include "Wrappers/Module.h"
 #include "Wrappers/Memory.h"
+#include "Wrappers/Symbols.h"

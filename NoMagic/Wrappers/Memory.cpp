@@ -93,13 +93,9 @@ namespace NoMagic
 			#endif
 		}
 
-		const PBYTE Memory::DetourIAT(std::string const& functionName, const PBYTE newFunction)
+		const PBYTE Memory::DetourIAT(std::string const& functionName, const PBYTE newFunction, Module const& module)
 		{
-			auto process = NoMagic::Wrappers::Process::GetCurrentProcess();
-			auto module = NoMagic::Wrappers::Module::GetModules(process)[0];
-			module.ReadPEHeader();
 			auto ntHeaders = module.GetNTHeaders();
-
 			auto baseAddress = module.GetBaseAddress();
 	
 			auto dataDir = ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
@@ -139,6 +135,81 @@ namespace NoMagic
 			}
 
 			return nullptr; //throw?
+		}
+
+		const PBYTE Memory::DetourEAT(std::string const& functionName, const PBYTE newFunction, Module const& module)
+		{
+			auto ntHeaders = module.GetNTHeaders();
+			auto baseAddress = module.GetBaseAddress();
+	
+			auto dataDir = ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+			auto exportTable = reinterpret_cast<PIMAGE_EXPORT_DIRECTORY>(dataDir.VirtualAddress + baseAddress);
+
+			auto functions = exportTable->NumberOfFunctions;
+			auto names = exportTable->NumberOfNames;
+
+			if(names < 1 || functions < 1)
+				return nullptr;
+
+			DWORD* functionAddresses = (DWORD*)(exportTable->AddressOfFunctions + baseAddress);
+			DWORD* nameAddresses = (DWORD*)(exportTable->AddressOfNames + baseAddress);
+
+			for(unsigned int i = 0; i < functions; ++i, ++functionAddresses, ++nameAddresses)
+			{
+				auto name = (char*)(*nameAddresses + baseAddress);
+
+				if(strcmp(name, functionName.c_str()))
+					continue;
+
+				UINT_PTR function = (UINT_PTR)(*functionAddresses + baseAddress);
+				
+				UINT_PTR ThatFunction = (UINT_PTR)newFunction;
+				
+				unsigned int Diff = (unsigned int)(ThatFunction - function - 5);
+
+				auto old = NoMagic::Wrappers::Memory::Protect(function, 5, PAGE_EXECUTE_READWRITE);
+				PBYTE oldFunc = (PBYTE)(*((unsigned int*)(function+1)));
+				*((unsigned int*)(function+1)) = Diff;
+				NoMagic::Wrappers::Memory::Protect(function, 5, old);
+
+				return oldFunc;
+			}
+			return nullptr;
+		}
+
+		const bool Memory::RemoveEATDetour(std::string const& functionName, const PBYTE origFunction, Module const& module)
+		{
+			auto ntHeaders = module.GetNTHeaders();
+			auto baseAddress = module.GetBaseAddress();
+	
+			auto dataDir = ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+			auto exportTable = reinterpret_cast<PIMAGE_EXPORT_DIRECTORY>(dataDir.VirtualAddress + baseAddress);
+
+			auto functions = exportTable->NumberOfFunctions;
+			auto names = exportTable->NumberOfNames;
+
+			if(names < 1 || functions < 1)
+				return false;
+
+			DWORD* functionAddresses = (DWORD*)(exportTable->AddressOfFunctions + baseAddress);
+			DWORD* nameAddresses = (DWORD*)(exportTable->AddressOfNames + baseAddress);
+
+			for(unsigned int i = 0; i < functions; ++i, ++functionAddresses, ++nameAddresses)
+			{
+				auto name = (char*)(*nameAddresses + baseAddress);
+
+				if(strcmp(name, functionName.c_str()))
+					continue;
+			
+				UINT_PTR function = (UINT_PTR)(*functionAddresses + baseAddress);
+
+				auto old = NoMagic::Wrappers::Memory::Protect(function, 5, PAGE_EXECUTE_READWRITE);
+				*((unsigned int*)(function+1)) = (unsigned int)(origFunction);
+				NoMagic::Wrappers::Memory::Protect(function, 5, old);
+
+				return true;
+			}
+			return false;
 		}
 
 #pragma region Allocate
@@ -209,10 +280,10 @@ namespace NoMagic
 #pragma endregion
 
 #pragma region Read
-		std::string Memory::ReadString(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress)
+		tstring Memory::ReadString(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress)
 		{
-			CHAR buffer[513] = {};
-			std::stringstream sstream;
+			TCHAR buffer[513] = {};
+			std::basic_stringstream<TCHAR> sstream;
 
 			UINT_PTR addr = address+baseAddress;
 
@@ -221,21 +292,21 @@ namespace NoMagic
 				W32_CALL(ReadProcessMemory(process, reinterpret_cast<LPCVOID>(addr), buffer, 512, nullptr));
 				addr += 512;
 				sstream << buffer;
-			} while(strlen(buffer) == 512);
+			} while(_tcslen(buffer) == 512);
 
 			return sstream.str();
 		}
 
-		std::string Memory::ReadString(const HANDLE process, UINT_PTR address)
+		tstring Memory::ReadString(const HANDLE process, UINT_PTR address)
 		{
 			MAGIC_CALL( return ReadString(process, address, 0); )
 		}
 		
 
-		std::string Memory::ReadString(const Process& process, UINT_PTR address, UINT_PTR baseAddress)
+		tstring Memory::ReadString(const Process& process, UINT_PTR address, UINT_PTR baseAddress)
 		{
-			CHAR buffer[513] = {};
-			std::stringstream sstream;
+			TCHAR buffer[513] = {};
+			std::basic_stringstream<TCHAR> sstream;
 
 			UINT_PTR addr = address+baseAddress;
 
@@ -244,12 +315,12 @@ namespace NoMagic
 				W32_CALL(ReadProcessMemory(process.GetHandle(), reinterpret_cast<LPCVOID>(addr), buffer, 512, nullptr));
 				addr += 512;
 				sstream << buffer;
-			} while(strlen(buffer) == 512);
+			} while(_tcslen(buffer) == 512);
 
 			return sstream.str();
 		}
 
-		std::string Memory::ReadString(const Process& process, UINT_PTR address)
+		tstring Memory::ReadString(const Process& process, UINT_PTR address)
 		{
 			MAGIC_CALL( return ReadString(process, address, 0); )
 		}
@@ -257,29 +328,29 @@ namespace NoMagic
 
 #pragma region Write
 
-		SIZE_T Memory::WriteString(const HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
+		SIZE_T Memory::WriteString(const HANDLE process, UINT_PTR address, tstring const& value, UINT_PTR baseAddress)
 		{
 			SIZE_T numWritten = 0;
 			auto addr = address+baseAddress;
-			W32_CALL(WriteProcessMemory(process, reinterpret_cast<LPVOID>(addr), value.c_str(), value.length() + 1, &numWritten));
+			W32_CALL(WriteProcessMemory(process, reinterpret_cast<LPVOID>(addr), value.c_str(), (value.length() + 1) * sizeof(TCHAR), &numWritten));
 			return numWritten;
 		}
 
-		SIZE_T Memory::WriteString(const HANDLE process, UINT_PTR address, std::string const& value)
+		SIZE_T Memory::WriteString(const HANDLE process, UINT_PTR address, tstring const& value)
 		{
 			MAGIC_CALL( return WriteString(process, address, value, 0); )
 		}
 
 		
-		SIZE_T Memory::WriteString(const Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress)
+		SIZE_T Memory::WriteString(const Process& process, UINT_PTR address, tstring const& value, UINT_PTR baseAddress)
 		{
 			SIZE_T numWritten = 0;
 			auto addr = address+baseAddress;
-			W32_CALL(WriteProcessMemory(process.GetHandle(), reinterpret_cast<LPVOID>(addr), value.c_str(), value.length() + 1, &numWritten));
+			W32_CALL(WriteProcessMemory(process.GetHandle(), reinterpret_cast<LPVOID>(addr), value.c_str(), (value.length() + 1) * sizeof(TCHAR), &numWritten));
 			return numWritten;
 		}
 
-		SIZE_T Memory::WriteString(const Process& process, UINT_PTR address, std::string const& value)
+		SIZE_T Memory::WriteString(const Process& process, UINT_PTR address, tstring const& value)
 		{
 			MAGIC_CALL( return WriteString(process, address, value, 0); )
 		}
