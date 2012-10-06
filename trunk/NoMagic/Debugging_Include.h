@@ -29,14 +29,14 @@ namespace NoMagic
 	{
 		typedef PVECTORED_EXCEPTION_HANDLER exceptionCallback;
 
-		enum HardwareBreakpoint_Type_Code
+		enum HardwareBreakpoint_Type_Code : unsigned char
 		{
 			hType_code = 0,
 			hType_write = 1,
 			hType_readwrite = 3,
 		};
 
-		enum HardwareBreakpoint_Size
+		enum HardwareBreakpoint_Size : unsigned char
 		{
 			hSize_1 = 0,
 			hSize_2 = 1,

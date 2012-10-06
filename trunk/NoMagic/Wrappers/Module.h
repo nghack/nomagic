@@ -44,7 +44,7 @@ namespace NoMagic
 
 			static Module FromLibrary(Process const& process, tstring const& libPath);
 
-			UINT_PTR GetProcAddress(tstring const& name) const;
+			UINT_PTR GetProcAddress(std::string const& name) const;
 
 			const HMODULE GetHandle() const;
 			DWORD GetSize() const;

@@ -19,6 +19,8 @@
 
 #pragma once
 
+#ifndef UNICODE
+
 namespace NoMagic
 {
 	namespace fasm
@@ -94,3 +96,5 @@ namespace NoMagic
 		};
 	}
 }
+
+#endif

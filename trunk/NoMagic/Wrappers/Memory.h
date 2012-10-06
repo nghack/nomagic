@@ -99,15 +99,75 @@ namespace NoMagic
 			static const PBYTE DetourFunction(const PBYTE targetFunction, const PBYTE newFunction);
 
 			/**
+			Hooks a function
+			\param targetFunction the function we want to hook
+			\param newFunction the function which will be called instead of the original function
+			\return new address of the old function
+			*/
+			template <typename T>
+			static const T DetourFunction(const T targetFunction, const T newFunction)
+			{
+				return reinterpret_cast<T>(DetourFunction(reinterpret_cast<PBYTE>(targetFunction), reinterpret_cast<PBYTE>(newFunction)));
+			}
+
+			/*This should be redundant. If not, just uncomment this block*/
+			/*
+			template <typename T>
+			static const T DetourFunction(const UINT_PTR targetFunction, const T newFunction)
+			{
+				return reinterpret_cast<T>(DetourFunction(reinterpret_cast<PBYTE>(targetFunction), reinterpret_cast<PBYTE>(newFunction)));
+			}
+			*/
+
+
+			/**
 			Removes a hook
 			\param origFunction the original function returned by DetourFunction
 			\param your hooked function
+			\return TRUE on success otherwise FALSE
 			*/
 			static BOOL RemoveDetour(const PBYTE origFunction, const PBYTE yourFunction);
 
+			
 			/**
+			Removes a hook
+			\param origFunction the original function returned by DetourFunction
+			\param your hooked function
+			\return TRUE on success otherwise FALSE
 			*/
-			static const PBYTE DetourIAT(std::string const& functionName, const PBYTE newFunction);
+			template <typename T>
+			static BOOL RemoveDetour(const T origFunction, const T yourFunction)
+			{
+				return RemoveDetour(reinterpret_cast<PBYTE>(origFunction), reinterpret_cast<PBYTE>(yourFunction));
+			}
+
+			/**
+			Hooks a function in the import address table (IAT)
+			\param functionName the name of the function to hook
+			\param newFunction adress of the redirected function
+			\param module the module in which the function is located
+			\return address of the old function
+			\brief Remove the detour via hooking the hooked function with the original function address (see examples)
+			*/
+			static const PBYTE DetourIAT(std::string const& functionName, const PBYTE newFunction, Module const& module);
+			
+			/**
+			Hooks a function in the export address table (EAT)
+			\param functionName the name of the function to hook
+			\param newFunction adress of the redirected function
+			\param module the module in which the function is located
+			\return address of the old function
+			*/
+			static const PBYTE DetourEAT(std::string const& functionName, const PBYTE newFunction, Module const& module);
+
+			/**
+			Removes a hook within the export address table
+			\param functionName the name of the function to restore
+			\param newFunction adress of the original function
+			\param module the module in which the function is located
+			\return true on success otherwise false
+			*/
+			static const bool RemoveEATDetour(std::string const& functionName, const PBYTE origFunction, Module const& module);
 			
 			#pragma region Allocate
 			/**
@@ -180,11 +240,11 @@ namespace NoMagic
 			#pragma endregion
 
 			#pragma region ReadMethods
-			static std::string ReadString(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress);
-			static std::string ReadString(const HANDLE process, UINT_PTR address);
+			static tstring ReadString(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress);
+			static tstring ReadString(const HANDLE process, UINT_PTR address);
 
-			static std::string ReadString(const Process& process, UINT_PTR address, UINT_PTR baseAddress);
-			static std::string ReadString(const Process& process, UINT_PTR address);
+			static tstring ReadString(const Process& process, UINT_PTR address, UINT_PTR baseAddress);
+			static tstring ReadString(const Process& process, UINT_PTR address);
 
 			template <typename type>
 			static type Read(const HANDLE process, UINT_PTR address, UINT_PTR baseAddress, SIZE_T size = sizeof(type))
@@ -220,11 +280,11 @@ namespace NoMagic
 			#pragma endregion
 
 			#pragma region WriteMethods
-			static SIZE_T WriteString(const HANDLE process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
-			static SIZE_T WriteString(const HANDLE process, UINT_PTR address, std::string const& value);
+			static SIZE_T WriteString(const HANDLE process, UINT_PTR address, tstring const& value, UINT_PTR baseAddress);
+			static SIZE_T WriteString(const HANDLE process, UINT_PTR address, tstring const& value);
 
-			static SIZE_T WriteString(const Process& process, UINT_PTR address, std::string const& value, UINT_PTR baseAddress);
-			static SIZE_T WriteString(const Process& processs, UINT_PTR address, std::string const& value);
+			static SIZE_T WriteString(const Process& process, UINT_PTR address, tstring const& value, UINT_PTR baseAddress);
+			static SIZE_T WriteString(const Process& processs, UINT_PTR address, tstring const& value);
 
 			
 			template <typename type>

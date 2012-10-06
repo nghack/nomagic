@@ -16,19 +16,24 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 #pragma once
+
 namespace NoMagic
 {
 	namespace Wrappers
 	{
 		class Process
 		{
+			Process(const Process& right);
 		protected:
 			DWORD m_id;
-			HANDLE m_handle;
+			Handle m_handle;
 			tstring m_name;
 
 		public:
+			Process();
+			Process(Process&& right);
 			explicit Process(DWORD processID);
 			explicit Process(PROCESSENTRY32 const& processEntry);
 			virtual ~Process(void);
@@ -47,9 +52,10 @@ namespace NoMagic
 			void OpenProcess();
 
 			std::vector<Thread> GetThreads();
+			std::vector<Module> GetModules();
 
 			DWORD GetId() const;
-			const HANDLE GetHandle() const;
+			const Handle& GetHandle() const;
 			tstring const& GetName() const;
 		};
 	}

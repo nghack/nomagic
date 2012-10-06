@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 		//Wir lesen aus, ob die Konsole geöffnet ist (nur für WoW 3.3.5a!)
 		auto consoleOpen = nm.Read<BOOL>(0xCA1978);
 
-		//Here's my key, Philosophy. A freak like me, just needs infinity!
+		//Here's my key, philosophy. A freak like me, just needs infinity!
 		while(true)
 		{
 			//Wir schalten die Konsole ein bzw. aus ...

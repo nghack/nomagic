@@ -49,19 +49,18 @@ namespace NoMagic
 		_using(namespace Wrappers)
 		{
 			UINT_PTR addr;
-			Thread thread;
 			UINT_PTR loadedModule;
 			Module lib;
 
 			addr = Memory::Allocate(process, 0, dllPath.size() + 1);
 			if(addr == 0)
-				throw MagicException("VirtualAllocEx failed!", GetLastError());
+				throw MagicException(_T("VirtualAllocEx failed!"), GetLastError());
 			
 			try
 			{
 				Memory::WriteString(process, addr, dllPath);
 				
-				thread = Thread::CreateRemoteThread(process, reinterpret_cast<UINT_PTR>(LoadLibrary), reinterpret_cast<LPVOID>(addr));
+				auto thread = Thread::CreateRemoteThread(process, reinterpret_cast<UINT_PTR>(LoadLibrary), reinterpret_cast<LPVOID>(addr));
 				thread.WaitForSingleObject();
 
 				loadedModule = findLoadedModule(process, dllPath);
@@ -72,7 +71,7 @@ namespace NoMagic
 				addr = 0;
 				
 				lib = Module::FromLibrary(Process::GetCurrentProcess(), dllPath);
-				UINT_PTR startAddr = lib.GetProcAddress(_T("Start"));
+				UINT_PTR startAddr = lib.GetProcAddress("Start");
 
 				UINT_PTR diff = static_cast<UINT_PTR>(loadedModule) - reinterpret_cast<UINT_PTR>(lib.GetHandle());
 				addr = startAddr + diff;
@@ -96,27 +95,19 @@ namespace NoMagic
 	void Injector::CallStart(Wrappers::Process const& process, UINT_PTR startAddress)
 	{
 		if(startAddress == 0)
-			throw MagicException("Are you kidding me? -.-");
+			throw MagicException(_T("startAddress can not be 0!"));
 
 		_using(namespace Wrappers)
 		{
-			UINT_PTR addr = Memory::Allocate(process, 0, sizeof(UINT_PTR));
-
-			if(addr == 0)
-				throw MagicException("Allocation failed!", GetLastError());
-			
 			try
 			{
-				Memory::Write(process, addr, startAddress);
 				Thread thread = Thread::CreateRemoteThread(process, startAddress);
 				thread.WaitForSingleObject();
 			}
 			catch(...)
 			{
-				Memory::FreeMemory(process, addr);
+				throw;
 			}
-			
-			Memory::FreeMemory(process, addr);
 		} _endusing
 	}
 

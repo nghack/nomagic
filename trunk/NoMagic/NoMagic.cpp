@@ -62,7 +62,7 @@ namespace NoMagic
 				procs = Process::GetProcessesByName(name);
 
 				if(procs.size() <= 0)
-					throw MagicException("Can not find any processes!");
+					throw MagicException(_T("Can not find any processes!"));
 
 				procs[0].OpenProcess();
 				GetBaseAddress(procs[0]);
@@ -125,17 +125,17 @@ namespace NoMagic
 		{
 			auto addr = Memory::Allocate(process, 0, path.size() + 1);
 			if(addr == 0)
-				throw MagicException("VirtualAllocEx failed!", GetLastError());
+				throw MagicException(_T("VirtualAllocEx failed!"), GetLastError());
 
 			MAGIC_CALL( Memory::WriteString(process, addr, path); )
 		
 			auto hThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(LoadLibraryA)
 				, reinterpret_cast<LPVOID>(addr), 0, nullptr);
 			if(nullptr == hThread)
-				throw MagicException("CreateRemoteThread failed!", GetLastError());
+				throw MagicException(_T("CreateRemoteThread failed!"), GetLastError());
 
 			if(0 != WaitForSingleObject(hThread, INFINITE))
-				throw MagicException("WaitForSingleObject failed!", GetLastError());
+				throw MagicException(_T("WaitForSingleObject failed!"), GetLastError());
 			DWORD loadedModule = 0;
 			W32_CALL(GetExitCodeThread( hThread, &loadedModule ));
 			outLoadedModule = reinterpret_cast<HMODULE>(loadedModule);
@@ -148,11 +148,11 @@ namespace NoMagic
 	{
 		auto hmod = LoadLibrary(path.c_str());
 		if(hmod == nullptr)
-			throw MagicException("LoadLibrary failed!", GetLastError());
+			throw MagicException(_T("LoadLibrary failed!"), GetLastError());
 
 		auto procAddr = reinterpret_cast<DWORD>(GetProcAddress(hmod, "Start"));
 		if(procAddr == NULL)
-			throw MagicException("GetProcAddress failed!", GetLastError());
+			throw MagicException(_T("GetProcAddress failed!"), GetLastError());
 
 		auto diff = reinterpret_cast<DWORD>(loadedModule) - reinterpret_cast<DWORD>(hmod);
 		outStartAddress = procAddr + diff;
@@ -164,7 +164,7 @@ namespace NoMagic
 	{
 		auto addr = VirtualAllocEx(process, nullptr, sizeof(UINT_PTR), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 		if(nullptr == addr)
-			throw MagicException("VirtualAllocEx failed!", GetLastError());
+			throw MagicException(_T("VirtualAllocEx failed!"), GetLastError());
 
 		SIZE_T written = 0;
 
@@ -174,10 +174,10 @@ namespace NoMagic
 
 		auto hThread = CreateRemoteThread(process, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(startFunctionAddress), addr, 0, nullptr);
 		if(nullptr == hThread)
-			throw MagicException("CreateRemoteThread failed!", GetLastError());
+			throw MagicException(_T("CreateRemoteThread failed!"), GetLastError());
 		
 		if(0 != WaitForSingleObject(hThread, INFINITE))
-			throw MagicException("WaitForSingleObject failed!", GetLastError());
+			throw MagicException(_T("WaitForSingleObject failed!"), GetLastError());
 
 		W32_CALL(CloseHandle(hThread));
 		
@@ -207,10 +207,10 @@ namespace NoMagic
 	{
 		auto hThread = CreateRemoteThread( process, nullptr, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, (PVOID)address, 0, nullptr);
 		if(nullptr == hThread)
-			throw MagicException("CreateRemoteThread failed!", GetLastError());
+			throw MagicException(_T("CreateRemoteThread failed!"), GetLastError());
 
 		if(0 != WaitForSingleObject(hThread, INFINITE))
-			throw MagicException("WaitForSingleObject failed!", GetLastError());
+			throw MagicException(_T("WaitForSingleObject failed!"), GetLastError());
 
 		W32_CALL(CloseHandle(hThread));
 	}
@@ -226,7 +226,7 @@ namespace NoMagic
 		return (*__vmt)[vTableIndex];
 	}
 
-	std::string NoMagic::ReadString(UINT_PTR address, bool relative) const
+	tstring NoMagic::ReadString(UINT_PTR address, bool relative) const
 	{
 		if(relative)
 			MAGIC_CALL( return Wrappers::Memory::ReadString(process, address, baseAddress); )
@@ -234,7 +234,7 @@ namespace NoMagic
 			MAGIC_CALL( return Wrappers::Memory::ReadString(process, address); )
 	}
 	
-	void NoMagic::WriteString(UINT_PTR address, std::string value, bool relative) const
+	void NoMagic::WriteString(UINT_PTR address, tstring value, bool relative) const
 	{
 		if(relative)
 			MAGIC_CALL( Wrappers::Memory::WriteString(process, address, value, baseAddress); )

@@ -41,7 +41,7 @@ namespace NoMagic
 	///We do not handle Exceptions of any kind with this call
 	#define MAGIC_CALL(fun) try { fun; } catch(...) { throw; }
 	///Throws MagicException if the winapi functions fails.
-	#define W32_CALL(fun) if(FALSE == fun) throw ::NoMagic::MagicException(#fun, GetLastError())
+	#define W32_CALL(fun) if(FALSE == fun) throw ::NoMagic::MagicException(_T(#fun), GetLastError())
 
 	/**
 	Ein String gef&uuml;llt mit unsigned chars anstelle von signed chars.

@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Ressourcendateien">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Headerdateien\Algorithm">
       <UniqueIdentifier>{e89465be-ced9-4824-a107-5ea4571370b3}</UniqueIdentifier>
     </Filter>
@@ -102,6 +98,12 @@
     <ClInclude Include="Dependencies\Utilities.h">
       <Filter>Headerdateien\Dependencies</Filter>
     </ClInclude>
+    <ClInclude Include="Wrappers\Handle.h">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Wrappers\Symbols.h">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NoMagic.cpp">
@@ -136,6 +138,12 @@
     </ClCompile>
     <ClCompile Include="Debugging\MemoryBreakpoint.cpp">
       <Filter>Headerdateien\Debugging</Filter>
+    </ClCompile>
+    <ClCompile Include="Wrappers\Handle.cpp">
+      <Filter>Headerdateien\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Wrappers\Symbols.cpp">
+      <Filter>Headerdateien\Wrappers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
