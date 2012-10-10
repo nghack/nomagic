@@ -44,8 +44,9 @@ namespace NoMagic
 		return addr;
 	}
 
-	UINT_PTR Injector::Inject(Wrappers::Process const& process, tstring const& dllPath, Wrappers::Module& outModule)
+	Wrappers::Module Injector::Inject(Wrappers::Process const& process, tstring const& dllPath, UINT_PTR& outStartAddress)
 	{
+		Wrappers::Module outModule;
 		_using(namespace Wrappers)
 		{
 			UINT_PTR addr;
@@ -72,9 +73,9 @@ namespace NoMagic
 				
 				lib = Module::FromLibrary(Process::GetCurrentProcess(), dllPath);
 				UINT_PTR startAddr = lib.GetProcAddress("Start");
-
+				
 				UINT_PTR diff = static_cast<UINT_PTR>(loadedModule) - reinterpret_cast<UINT_PTR>(lib.GetHandle());
-				addr = startAddr + diff;
+				outStartAddress = startAddr + diff;
 
 				W32_CALL(FreeLibrary(lib.GetHandle()));
 			}
@@ -88,7 +89,7 @@ namespace NoMagic
 				throw;
 			}
 
-			return addr;
+			return outModule;
 		}_endusing
 	}
 
@@ -117,8 +118,17 @@ namespace NoMagic
 		{
 			try
 			{
-				Thread thread = Thread::CreateRemoteThread(process, reinterpret_cast<UINT_PTR>(FreeLibrary), reinterpret_cast<LPVOID>(dll.GetHandle()));
+				auto lib = Module::FromLibrary(Process::GetCurrentProcess(), dll.GetPath());
+				UINT_PTR endAddr = lib.GetProcAddress("End");
+				
+				auto diff = reinterpret_cast<UINT_PTR>(dll.GetHandle()) - reinterpret_cast<UINT_PTR>(lib.GetHandle());
+				endAddr = endAddr + diff;
+				
+				auto thread = Thread::CreateRemoteThread(process, endAddr, 0);
 				thread.WaitForSingleObject();
+
+				auto thread2 = Thread::CreateRemoteThread(process, reinterpret_cast<UINT_PTR>(FreeLibrary), reinterpret_cast<LPVOID>(dll.GetHandle()));
+				thread2.WaitForSingleObject();
 			}
 			catch(...)
 			{

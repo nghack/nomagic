@@ -78,18 +78,26 @@ namespace NoMagic
 		const PBYTE Memory::DetourFunction(const PBYTE targetFunction, const PBYTE newFunction)
 		{
 			#ifdef _M_AMD64
-			throw MagicException(_T("This features is not supported in x64!"));
+				throw MagicException(_T("This features is not supported in x64!"));
 			#else
-			return ::DetourFunction(targetFunction, newFunction);
+				DetourTransactionBegin();
+				DetourUpdateThread(GetCurrentThread());
+				DetourAttach(&(LPVOID&)targetFunction, newFunction);
+				DetourTransactionCommit();
+				return targetFunction;
 			#endif
 		}
 
 		BOOL Memory::RemoveDetour(const PBYTE origFunction, const PBYTE yourFunction)
 		{
 			#ifdef _M_AMD64
-			throw MagicException(_T("This features is not supported in x64!"));
+				throw MagicException(_T("This features is not supported in x64!"));
 			#else
-			return ::DetourRemove(origFunction, yourFunction);
+				DetourTransactionBegin();
+				DetourUpdateThread(GetCurrentThread());
+				DetourDetach(&(LPVOID&)origFunction, yourFunction);
+				DetourTransactionCommit();
+				return TRUE;
 			#endif
 		}
 
