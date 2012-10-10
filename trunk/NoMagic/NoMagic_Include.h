@@ -20,7 +20,12 @@
 #pragma once
 
 #pragma comment(lib, "psapi.lib")
+
+#ifdef DEBUG
+#pragma comment(lib, "detoured.lib")
+#else
 #pragma comment(lib, "detours.lib")
+#endif
 
 #include "STD_Include.h"
 
